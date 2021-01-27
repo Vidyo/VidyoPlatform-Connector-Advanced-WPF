@@ -1,0 +1,46 @@
+﻿<Window x:Class="VidyoConnector.RaisedHandDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VidyoConnector"
+        mc:Ignorable="d"
+        Title="Raised Hand Option" Height="150" Width="250" MinHeight="150" MinWidth="250" MaxHeight="150" MaxWidth="250">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="35*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="25*"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="80*"/>
+            <ColumnDefinition Width="10*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label Name="LabelSelectRaisedHandOption" Content="Select Raised Hand Option" Grid.Row="0" Grid.Column="1" Foreground="#13253B" FontSize="14" FontWeight="Bold"/>
+        <RadioButton x:Name="RadioButtonApprove" Content="Approve Raised Hand" IsChecked="True" Grid.Row="2" Grid.Column="1" FontSize="12" Foreground="#FF666666" Background="#FF83C36D" Checked="RadioButtonApprove_Checked"/>
+        <RadioButton x:Name="RadioButtonDismiss" Content="Dismiss Raised Hand" IsChecked="False" Grid.Row="4" Grid.Column="1" FontSize="12" Foreground="#FF666666" Background="#FF83C36D" Checked="RadioButtonDismiss_Checked" />
+
+        <Grid x:Name="GridInviteUser" Grid.Row="6" Grid.Column="1">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="20*"/>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="20*"/>
+            <ColumnDefinition Width="10*"/>
+        </Grid.ColumnDefinitions>
+
+            <Button x:Name="ButtonCancelRaisedHandResponse" Content="CANCEL" Grid.Row="6" Grid.Column="1"  Margin="0,1" FontSize="10" Background="#FF666666" Foreground="White" Click="ButtonCancelRaisedHandResponse_Click"/>
+            <Button x:Name="ButtonSubmitRaisedHandResponse" Content="SUBMIT" Grid.Row="6" Grid.Column="3"  Margin="0,1" FontSize="10" Foreground="White" Background="#FF83C36D" Click="ButtonSubmitRaisedHandResponse_Click" />
+        
+        </Grid>
+    </Grid>
+</Window>

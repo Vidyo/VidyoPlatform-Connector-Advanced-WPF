@@ -1,0 +1,603 @@
+﻿<Window x:Class="VidyoConferenceModeration.ConferenceModerationWindow"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:local="clr-namespace:VidyoConferenceModeration"
+    xmlns:viewModel="clr-namespace:VidyoConferenceModeration.ViewModel"
+    mc:Ignorable="d"
+    Title="Conference Moderation" Height="700" Width="900" MinHeight="700" MinWidth="900">
+    
+    <Grid x:Name="MainView">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="25*"/>
+            <ColumnDefinition Width="75*"/>
+        </Grid.ColumnDefinitions>
+
+        <!--Left Side View Grid-->
+        <Grid x:Name="LeftView" Grid.RowSpan="17" Background="#4CDEDEDE">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="15*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="15*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+            </Grid.RowDefinitions>
+
+            <!--Daily StandUp Room Grid-->
+            <Grid x:Name="DailyStandupRoomGrid" Grid.Row="1" Visibility="Visible" Margin="10,0,0,0" Width="203">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="60*"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="35*"/>
+                </Grid.RowDefinitions>
+                <Label Name="DailyStandupRoomLabel" Content="{Binding RoomName}" HorizontalAlignment="Center" VerticalAlignment="Center" Grid.Row="0" Grid.Column="0" FontSize="18" FontWeight="Bold" Foreground="#FF13253B"/>
+
+                <Grid x:Name="LobbyRoom" Grid.Row="2" Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="40*"/>
+                        <ColumnDefinition Width="20*"/>
+                    </Grid.ColumnDefinitions>
+                    <CheckBox x:Name="LoobyRoomCheckbox"  Content="Lobby Room" IsChecked="{Binding IsLobbyMode}" Grid.Row="2" Grid.Column="1" Foreground="#FF666666" Background="#FF83C36D" IsEnabled="False"/>
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="SeperatorDailyStandupRoomGrid" Grid.Row="2" Grid.Column="1">
+                <Separator></Separator>
+            </Grid>
+
+            <!--Moderator PIN Grid-->
+            <Grid x:Name="ModeratorPinGrid" Grid.Row="3" Grid.Column="1" Visibility="Visible" Margin="10,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25*"/>
+                    <RowDefinition Height="0"/>
+                    <RowDefinition Height="30*"/>
+                    <RowDefinition Height="0"/>
+                    <RowDefinition Height="20*"/>
+                </Grid.RowDefinitions>
+
+                <Label x:Name="LabelModeratorPIN" Content="Moderator PIN" Grid.Row="0" Grid.Column="0" FontSize="12" FontWeight="Bold" Foreground="#FF13253B"/>
+                <PasswordBox x:Name="PasswordBoxModeratorPIN" PasswordChanged="PasswordBoxModeratorPIN_PasswordChanged" IsEnabled="{Binding IsTexBoxModeratorPinEnabled}" Grid.Row="2" Grid.Column="0" Margin="0,5" BorderBrush="#FF666666"/>
+
+                <Grid x:Name="ModeratorPinButtons" Grid.Row="4" Grid.Column="0">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="20*"/>
+                    </Grid.ColumnDefinitions>
+                    <Button x:Name="ButtonRemoveModeratorPIN" Content="REMOVE" Command="{Binding CommandRemoveModeratorPIN}" IsEnabled="{Binding IsButtonRemoveModeratorPinEnabled}" FontSize="10" Grid.Column="1" Margin="0,1" Background="#FF666666" Foreground="White"/>
+                    <Button x:Name="ButtonSetModeratorPIN" Content="SET" Command="{Binding CommandSetModeratorPIN}" IsEnabled="{Binding IsButtonSetModeratorPinEnabled}" FontSize="10" Grid.Column="3"  Margin="0,1" Foreground="White" Background="#FF83C36D"/>
+                </Grid>
+            </Grid>
+
+            <!--Room PIN Grid-->
+            <Grid x:Name="RoomPinGrid" Grid.Row="5" Grid.Column="1" Visibility="Visible" Margin="10,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="25*"/>
+                    <RowDefinition Height="0"/>
+                    <RowDefinition Height="30*"/>
+                    <RowDefinition Height="0"/>
+                    <RowDefinition Height="20*"/>
+                </Grid.RowDefinitions>
+
+                <Label x:Name="LabelRoomPin" Content="Room PIN" Grid.Row="0" Grid.Column="0" FontSize="12" FontWeight="Bold" Foreground="#FF13253B"/>
+                <PasswordBox x:Name="PasswordBoxRoomPIN" PasswordChanged="PasswordBoxRoomPIN_PasswordChanged" IsEnabled="{Binding IsTextBlockRoomPINEnabled}" Grid.Row="2" Grid.Column="0" Margin="0,5" BorderBrush="#FF666666"/>
+
+                <Grid x:Name="RoomPinButtons" Grid.Row="4" Grid.Column="0">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="20*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="20*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Button x:Name="ButtonRemoveRoomPIN" Content="REMOVE" Command="{Binding CommandRemoveRoomPIN}" IsEnabled="{Binding IsButtonRemoveRoomPinEnabled}" FontSize="10" Grid.Column="1"  Margin="0,1" Background="#FF666666" Foreground="White"/>
+                    <Button x:Name="ButtonSetRoomPIN" Content="SET" Command="{Binding CommandSetRoomPIN}" IsEnabled="{Binding IsButtonSetRoomPinEnabled}" FontSize="10" Grid.Column="3"  Margin="0,1" Foreground="White" Background="#FF83C36D"/>
+                </Grid>
+            </Grid>
+
+            <Grid x:Name="SeperatorModeratorPinGrid" Grid.Row="6" Grid.Column="1">
+                <Separator></Separator>
+            </Grid>
+
+            <!--Conference Mode Grid-->
+            <Grid x:Name="ConferenceModeGrid" Grid.Row="7" Grid.Column="1" Visibility="Visible" Margin="10,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="25*"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="25*"/>
+                </Grid.RowDefinitions>
+
+                <Label Name="LabelConferenceMode" Content="Conference Mode" Grid.Row="0" Grid.Column="0" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+                <RadioButton x:Name="RadioButtonPresenterMode" GroupName="GroupConfMode" Content="Presenter Mode" Command="{Binding CommandSetPresenterMode}" IsChecked="{Binding IsPresenterMode, Mode=OneWay}" IsEnabled="{Binding IsPresenterModeEnabled}" Grid.Row="2" Grid.Column="0" Foreground="#FF666666" Background="#FF83C36D" />
+                <RadioButton x:Name="RadioButtonGroupMode" GroupName="GroupConfMode" Content="Group Mode" Command="{Binding CommandSetGroupMode}" IsChecked="{Binding IsGroupMode, Mode=OneWay}" IsEnabled="{Binding IsGroupModeEnabled}" Grid.Row="4" Grid.Column="0" Foreground="#FF666666" Background="#FF83C36D" />
+            </Grid>
+
+            <!--Conference Room Grid-->
+            <Grid x:Name="ConferenceRoomGrid" Grid.Row="9" Grid.Column="1" Visibility="Visible" Margin="10,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="25*"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="25*"/>
+                </Grid.RowDefinitions>
+
+                <Label Name="LabelConferenceRoom" Content="Conference Room" Grid.Row="0" Grid.Column="0" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+                <RadioButton x:Name="RadioButtonLockRoom" GroupName="GroupConfRoom" Content="Lock Room" Command="{Binding CommandSetLockRoom}" IsChecked="{Binding IsLockRoom, Mode=OneWay}" IsEnabled="{Binding IsLockRoomEnabled}" Grid.Row="2" Grid.Column="0" Foreground="#FF666666" Background="#FF83C36D" />
+                <RadioButton x:Name="RadioButtonUnlockRoom" GroupName="GroupConfRoom" Content="Unlock Room" Command="{Binding CommandSetUnlockRoom}" IsChecked="{Binding IsUnlockRoom, Mode=OneWay}" IsEnabled="{Binding IsUnlockRoomEnabled}" Grid.Row="4" Grid.Column="0" Foreground="#FF666666" Background="#FF83C36D" />
+            </Grid>
+
+            <!--Moderator Role Grid-->
+            <Grid x:Name="ModeratorRoleGrid" Grid.Row="11" Grid.Column="1" Visibility="Visible" Margin="10,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="35*"/>
+                    <RowDefinition Height="10*"/>
+                    <RowDefinition Height="25*"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="25*"/>
+                </Grid.RowDefinitions>
+
+                <Label Name="LabelModeratorRole" Content="Moderator Role" Grid.Row="0" Grid.Column="0" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+                <RadioButton x:Name="RadioButtonRoleAsNone" Content="Moderator" GroupName="GroupModeratorRole" Command="{Binding CommandSetRoleModerator}" IsChecked="{Binding IsRoleModerator, Mode=OneWay}" IsEnabled="{Binding IsRoleModeratorEnabled}" Grid.Row="2" Grid.Column="0" Foreground="#FF666666" Background="#FF83C36D" />
+                <RadioButton x:Name="RadioButtonRoleAsModerator" Content="None" GroupName="GroupModeratorRole" Command="{Binding CommandSetRoleNone}" IsChecked="{Binding IsRoleNone, Mode=OneWay}" IsEnabled="{Binding IsRoleNoneEnabled}" Grid.Row="4" Grid.Column="0" Foreground="#FF666666" Background="#FF83C36D" />
+            </Grid>
+
+            <Grid x:Name="SeperatorModeratorRoleGrid" Grid.Row="12" Grid.Column="1">
+                <Separator></Separator>
+            </Grid>
+            <!--User Control Grid-->
+            <Grid x:Name="UserControlGrid" Grid.Row="13" Grid.Column="1" Visibility="Visible" Margin="10,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0*"/>
+                    <RowDefinition Height="25*"/>
+                    <RowDefinition Height="0*"/>
+                    <RowDefinition Height="30*"/>
+                </Grid.RowDefinitions>
+
+                <Label Name="LabelHandStatus" Content="Hand Status" Grid.Row="1" Grid.Column="0" Foreground="#FF13253B" FontWeight="Bold" FontSize="12"/>
+                <Grid x:Name="UserControlButtonsGrid" Grid.Row="3" Grid.Column="0">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="10*"/>
+                        <ColumnDefinition Width="30*"/>
+                        <ColumnDefinition Width="10*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Image Name="ImageHandStatus" Grid.Row="1" Grid.Column="1" Height="25" Width="25" MouseLeftButtonDown="ImageHandStatus_MouseLeftButtonDown">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRaisedHand, Mode=OneWay}" Value="False">
+                                        <Setter Property="Source" Value="Images/handRaisedOff.png" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsRaisedHand, Mode=OneWay}" Value="True">
+                                        <Setter Property="Source" Value="Images/handRaisedOn.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+
+                </Grid>
+
+            </Grid>
+            <Grid x:Name="SeperatorUserControlGrid" Grid.Row="14" Grid.Column="0">
+                <Separator></Separator>
+            </Grid>
+
+            <!--Recording Profile Grid-->
+            <Grid x:Name="RecordingProfilesGrid" Grid.Row="15" Grid.Column="1" Visibility="Visible" Margin="10,0">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0"/>
+                    <RowDefinition Height="22*"/>
+                    <RowDefinition Height="0"/>
+                    <RowDefinition Height="38*"/>
+                </Grid.RowDefinitions>
+
+                <Label x:Name="LabelRecordingProfile" Content="Recording Profiles" Grid.Row="1" Grid.Column="0" Foreground="#FF13253B" FontWeight="Bold" FontSize="12" Grid.RowSpan="2"/>
+
+                <ListBox x:Name="ListBoxRecordingProfile" ItemsSource="{Binding RecordingProfileItemList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="3" Grid.Column="0" SelectionChanged="ListBoxRecordingProfile_SelectionChanged" >
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock Text="{Binding RecordingProfileDescription}" />
+                            </StackPanel>
+                        </DataTemplate>
+                    </ListBox.ItemTemplate>
+                </ListBox>
+
+            </Grid>
+
+            <!--Recording Control Grid-->
+            <Grid x:Name="RecordingControlGrid" Grid.Row="17" Grid.Column="1" Visibility="Visible" Margin="10,0">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="0*"/>
+                    <RowDefinition Height="25*"/>
+                    <RowDefinition Height="0*"/>
+                    <RowDefinition Height="30*"/>
+                </Grid.RowDefinitions>
+
+                <Label Name="LabelRecordingControl" Content="Recording Control" Grid.Row="1" Grid.Column="0" Foreground="#FF666666" FontWeight="Bold"/>
+
+                <Grid x:Name="StartRecordingButtonsGrid" Grid.Row="3" Grid.Column="0">
+
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="30*"/>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="50*"/>
+                        <ColumnDefinition Width="30*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Image Name="ImageRecordingStart" IsEnabled="{Binding IsImageRecordingStartEnabled}" Grid.Row="3" Grid.Column="1" Height="25" Width="25" MouseLeftButtonDown="ImageRecordingStart_MouseLeftButtonDown">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRecordingStarted, Mode=OneWay}" Value="True">
+                                        <Setter Property="Source" Value="Images/startRecordingOn.png"/>
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsRecordingStarted, Mode=OneWay}" Value="False">
+                                        <Setter Property="Source" Value="Images/startRecordingOff.png" />
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+
+                    <Image Name="ImageRecordingPauseResume" IsEnabled="{Binding IsImageRecordingPausedEnabled}" Grid.Row="3" Grid.Column="3" Height="25" Width="25" MouseLeftButtonDown="ImageRecordingPauseResume_MouseLeftButtonDown">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRecordingPaused, Mode=OneWay}" Value="true">
+                                        <Setter Property="Source" Value="Images/pauseRecording.png" />
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsRecordingPaused, Mode=OneWay}" Value="false">
+                                        <Setter Property="Source" Value="Images/resumeRecording.png" />
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+
+                    <Image Name="ImageRecordingStop" IsEnabled="{Binding IsImageRecordingStopEnabled}" Grid.Row="3" Grid.Column="5" Height="25" Width="25" MouseLeftButtonDown="ImageRecordingStop_MouseLeftButtonDown">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding IsRecordingStopped, Mode=OneWay}" Value="True">
+                                        <Setter Property="Source" Value="Images/stopRecordingOff.png"/>
+                                        <Setter Property="IsEnabled" Value="False"/>
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding IsRecordingStopped, Mode=OneWay}" Value="False">
+                                        <Setter Property="Source" Value="Images/stopRecordingOn.png" />
+                                        <Setter Property="IsEnabled" Value="True"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>                    
+                </Grid>
+            </Grid>
+        </Grid>
+
+        <!--Right Side View Grid-->
+        <Grid x:Name="RightView" Grid.Column="1" Grid.RowSpan="15">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="180*"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="500*"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+
+            <Grid x:Name="TopRightSideGrid" Grid.Row="0" Grid.Column="1">
+
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="50*"/>
+                    <RowDefinition Height="50*"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="20*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="320*"/>
+                </Grid.ColumnDefinitions>
+
+                <Grid x:Name="RoomControlGrid" Grid.Row="0" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="30*"/>
+                        <RowDefinition Height="20*"/>
+                    </Grid.RowDefinitions>
+                    <Label x:Name="LabelRoomControl" Content="Room Control" Grid.Row="1" Grid.Column="0" Foreground="#FF13253B" FontSize="18" FontWeight="Bold"/>
+                    <Label x:Name="LabelAddParticipant" Content="Add Participant to the conference." IsEnabled="{Binding IsLabelAddParticipantEnabled}" FontSize="10" Grid.Row="2" Grid.Column="0" FontStyle="Italic" Grid.RowSpan="2" Foreground="#FF666666" MouseLeftButtonDown="LabelAddParticipant_MouseLeftButtonDown"/>
+                </Grid>
+
+                <Grid x:Name="ActionsLabel"  Grid.Row="1" Grid.Column="1" Background="#4CDEDEDE">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="25*"/>
+                        <RowDefinition Height="20*"/>
+                        <RowDefinition Height="0*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="100*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="35*"/>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="35*"/>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="35*"/>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="35*"/>
+                        <ColumnDefinition Width="5*"/>
+                        <ColumnDefinition Width="35*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="35*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="35*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label x:Name="LabelRemovePresenter" Content="Remove &#10;Presenter" Grid.Row="0" Grid.Column="3" FontSize="10" HorizontalContentAlignment="Center" Foreground="#FF666666" FontWeight="Bold"/>
+                    <Label x:Name="LabelUnraiseAllHands" Content="DismissAll &#10;Hand" Grid.Row="0" Grid.Column="5" FontSize="10" HorizontalContentAlignment="Center" Foreground="#FF666666" FontWeight="Bold"/>
+                    <Label x:Name="LabelHardMuteAudioAll" Content="Hard Mute &#10;Audio" Grid.Row="0" Grid.Column="7" FontSize="10" HorizontalContentAlignment="Center" Foreground="#FF666666" FontWeight="Bold"/>
+                    <Label x:Name="LabelHardMuteVideoAll" Content="Hard Mute &#10;Video" Grid.Row="0" Grid.Column="9" FontSize="10" HorizontalContentAlignment="Center" Foreground="#FF666666" FontWeight="Bold"/>
+                    <Label x:Name="LabelSoftMuteAudioAll" Content="Soft Mute &#10;Audio" Grid.Row="0" Grid.Column="11" FontSize="10" HorizontalContentAlignment="Center" Foreground="#FF666666" FontWeight="Bold"/>
+                    <Label x:Name="LabelSoftMuteVideoAll" Content="Soft Mute &#10;Video" Grid.Row="0" Grid.Column="13" FontSize="10" HorizontalContentAlignment="Center" Foreground="#FF666666" FontWeight="Bold"/>
+                    <Label x:Name="LabelDisconnectAll" Content="Disconnect&#10;All" Grid.Row="0" Grid.Column="15" FontSize="10" HorizontalContentAlignment="Center" Grid.RowSpan="2" Foreground="#FF666666" FontWeight="Bold"/>
+
+                    <Label x:Name="LabelAllParticipants" Content="All Participants" Grid.Row="1" Grid.Column="0" FontSize="12" VerticalAlignment="Center" HorizontalAlignment="Left" Foreground="#FF666666" FontWeight="Bold"/>
+                    <Image x:Name="ImageRemovePresenter" IsEnabled="{Binding IsImageRemovePresenterEnabled}" Source="/Images/removePresenter.png" Grid.Row="1" Grid.Column="3" Height="25" Width="25" MouseLeftButtonDown="ImageRemovePresenter_MouseLeftButtonDown"/>
+                    <Image x:Name="ImageDismissAllRaisedHand" IsEnabled="{Binding IsImageDismissAllRaisedHandEnabled}" Source="/Images/handRaisedOn.png" Grid.Row="1" Grid.Column="5" Height="25" Width="25" MouseLeftButtonDown="ImageDismissAllRaisedHand_MouseLeftButtonDown"/>
+
+                    <Image x:Name="ImageHardMuteAudioAll" IsEnabled="{Binding IsImageHardMuteAudioAllEnabled}" Grid.Row="1" Grid.Column="7" Height="25" Width="25" MouseLeftButtonDown="ImageHardMuteAudioAll_MouseLeftButtonDown">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ParticipantAllHardAudioMuteStatus, Mode=OneWay}" Value="False">
+                                        <Setter Property="Source" Value="Images/hardUnmuteMic.png" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ParticipantAllHardAudioMuteStatus, Mode=OneWay}" Value="True">
+                                        <Setter Property="Source" Value="Images/hardMuteMic.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+
+                    <Image x:Name="ImageHardMuteVideoAll" IsEnabled="{Binding IsImageHardMuteVideoAllEnabled}" Grid.Row="1" Grid.Column="9" Height="25" Width="25" MouseLeftButtonDown="ImageHardMuteVideoAll_MouseLeftButtonDown">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ParticipantAllHardVideoMuteStatus, Mode=OneWay}" Value="False">
+                                        <Setter Property="Source" Value="Images/hardUnmuteCamera.png" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ParticipantAllHardVideoMuteStatus, Mode=OneWay}" Value="True">
+                                        <Setter Property="Source" Value="Images/hardMuteCamera.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+
+                    <Image x:Name="ImageSoftMuteAudioAll" IsEnabled="{Binding IsImageSoftMuteAudioAllEnabled}" Grid.Row="1" Grid.Column="11" Height="25" Width="25" MouseLeftButtonDown="ImageSoftMuteAudioAll_MouseLeftButtonDown">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ParticipantAllSoftAudioMuteStatus, Mode=OneWay}" Value="False">
+                                        <Setter Property="Source" Value="Images/softUnmuteMic.png" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ParticipantAllSoftAudioMuteStatus, Mode=OneWay}" Value="True">
+                                        <Setter Property="Source" Value="Images/softMuteMic.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+
+                    <Image x:Name="ImageSoftMuteVideoAll" IsEnabled="{Binding IsImageSoftMuteVideoAllEnabled}" Grid.Row="1" Grid.Column="13" Height="25" Width="25" MouseLeftButtonDown="ImageSoftMuteVideoAll_MouseLeftButtonDown">
+                        <Image.Style>
+                            <Style TargetType="{x:Type Image}">
+                                <Style.Triggers>
+                                    <DataTrigger Binding="{Binding ParticipantAllSoftVideoMuteStatus, Mode=OneWay}" Value="False">
+                                        <Setter Property="Source" Value="Images/softUnmuteCamera.png" />
+                                    </DataTrigger>
+                                    <DataTrigger Binding="{Binding ParticipantAllSoftVideoMuteStatus, Mode=OneWay}" Value="True">
+                                        <Setter Property="Source" Value="Images/softMuteCamera.png"/>
+                                    </DataTrigger>
+                                </Style.Triggers>
+                            </Style>
+                        </Image.Style>
+                    </Image>
+
+                    <Image x:Name="ImageDropAllParticipant" IsEnabled="{Binding IsImageDropAllParticipantEnabled}" Source="/Images/disconnectCall.png" Grid.Row="1" Grid.Column="15" Height="25" Width="25" MouseLeftButtonDown="ImageDropAllParticipant_MouseLeftButtonDown"/>
+
+                </Grid>
+
+                <Grid x:Name="ParticipantsListLabes"  Grid.Row="3" Grid.Column="1" Width="Auto">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="80*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="40*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="30*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="30*"/>
+                        <ColumnDefinition Width="4*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <Label x:Name="LabelParticipantCount" Content="{Binding ParticipantCount}" Grid.Row="0" Grid.Column="1" HorizontalAlignment="Left" Foreground="#FF666666" FontWeight="Bold" FontSize="14"/>
+                    <Label x:Name="LabelPresenter" Content="Presenter" Grid.Row="0" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF666666" FontWeight="Bold" FontSize="10"/>
+                    <Label x:Name="LabelUnraiseHand" Content="Hand" Grid.Row="0" Grid.Column="11" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF666666" FontSize="10" FontWeight="Bold"/>
+                    <Label x:Name="LabelHardMuteMic" Content="Audio" Grid.Row="0" Grid.Column="13" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF666666" FontSize="10" FontWeight="Bold"/>
+                    <Label x:Name="LabelHardMuteCamera" Content="Video" Grid.Row="0" Grid.Column="15" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF666666" FontWeight="Bold"/>
+                    <Label x:Name="LabelDisconnect" Content="Disconnect" Grid.Row="0" Grid.Column="17" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF666666" FontWeight="Bold"/>
+                </Grid>
+            </Grid>
+
+
+            <Grid x:Name="BottomRightSideGrid" Grid.Row="2" Grid.Column="1" Grid.RowSpan="2" Width="Auto">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="320*"/>
+                </Grid.ColumnDefinitions>
+                
+                <ListBox x:Name="ListViewParticipantList" ItemsSource="{Binding ParticipantItemList}" ScrollViewer.HorizontalScrollBarVisibility="Disabled"  Grid.Row="0" Grid.Column="1" SelectionChanged="ListBoxParticipantList_SelectionChanged" HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+                    <ListBox.ItemTemplate>
+                        <DataTemplate>
+
+                            <Grid Name="ParticipantGrid" Width="Auto">
+                                <Grid.ColumnDefinitions>
+                                    <ColumnDefinition Width="0*"/>
+                                    <ColumnDefinition Width="80*"/>
+                                    <ColumnDefinition Width="0*"/>
+                                    <ColumnDefinition Width="25*"/>
+                                    <ColumnDefinition Width="0*"/>
+                                    <ColumnDefinition Width="25*"/>
+                                    <ColumnDefinition Width="0*"/>
+                                    <ColumnDefinition Width="40*"/>
+                                    <ColumnDefinition Width="0*"/>
+                                    <ColumnDefinition Width="30*"/>
+                                    <ColumnDefinition Width="0*"/>
+                                    <ColumnDefinition Width="25*"/>
+                                    <ColumnDefinition Width="0*"/>
+                                    <ColumnDefinition Width="25*"/>
+                                    <ColumnDefinition Width="0*"/>
+                                    <ColumnDefinition Width="25*"/>
+                                    <ColumnDefinition Width="0*"/>
+                                    <ColumnDefinition Width="30*"/>
+                                    <ColumnDefinition Width="2*"/>
+                                </Grid.ColumnDefinitions>
+
+                                <Label x:Name="LabelParticipantName" Content="{Binding ParticipantName}" Grid.Column="1" VerticalContentAlignment="Center" HorizontalAlignment="Left"/>
+
+                                <Image x:Name="ImageParticipantMicStatus" Grid.Row="0" Grid.Column="3" Height="25" Width="25">
+                                    <Image.Style>
+                                        <Style TargetType="{x:Type Image}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ParticipantMicStatus, Mode=OneWay}" Value="True">
+                                                    <Setter Property="Source" Value="Images/softMuteMic.png" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ParticipantMicStatus, Mode=OneWay}" Value="False">
+                                                    <Setter Property="Source" Value="Images/softUnmuteMic.png"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+
+                                <Image x:Name="ImageParticipantCameraStatus" Grid.Row="0" Grid.Column="5" Height="25" Width="25" >
+                                    <Image.Style>
+                                        <Style TargetType="{x:Type Image}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ParticipantCameraStatus, Mode=OneWay}" Value="True">
+                                                    <Setter Property="Source" Value="Images/softMuteCamera.png" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ParticipantCameraStatus, Mode=OneWay}" Value="False">
+                                                    <Setter Property="Source" Value="Images/softUnmuteCamera.png"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+
+                                <Label x:Name="LabelParticipantStatus" Content="{Binding ParticipantType}" Grid.Column="7" VerticalContentAlignment="Center" HorizontalAlignment="Center"/>
+
+                                <RadioButton x:Name="RadioButtonSetPresenter" Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type local:ConferenceModerationWindow}}, Path=DataContext.CommandSetPresenter}" GroupName="GroupPresenter" IsChecked="{Binding ParticipantIsPresenter}" Grid.Column="9" HorizontalAlignment="Center" VerticalAlignment="Center" Foreground="#FF666666" Background="#FF83C36D"/>
+
+                                <Image x:Name="ImageUnraiseParticipantHand" Grid.Row="0" Grid.Column="11" Height="25" Width="25" MouseLeftButtonDown="ImageParticipantHand_MouseLeftButtonDown">
+                                    <Image.Style>
+                                        <Style TargetType="{x:Type Image}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ParticipantHandStatus, Mode=TwoWay}" Value="False">
+                                                    <Setter Property="Source" Value="Images/handRaisedOff.png" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ParticipantHandStatus, Mode=TwoWay}" Value="True">
+                                                    <Setter Property="Source" Value="Images/handRaisedOn.png"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+
+                                <Image x:Name="ImageParticipantHardMuteUnmuteMicStatus" Grid.Row="0" Grid.Column="13" Height="25" Width="25" MouseLeftButtonDown="ImageParticipantMicrophone_MouseLeftButtonDown">
+                                    <Image.Style>
+                                        <Style TargetType="{x:Type Image}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ParticipantHardMuteUnmuteMicStatus, Mode=OneWay}" Value="False">
+                                                    <Setter Property="Source" Value="Images/hardUnmuteMic.png" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ParticipantHardMuteUnmuteMicStatus, Mode=OneWay}" Value="True">
+                                                    <Setter Property="Source" Value="Images/hardMuteMic.png"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+
+                                <Image x:Name="ImageParticipantHardMuteUnmuteCameraStatus" Grid.Row="0" Grid.Column="15" Height="25" Width="25" MouseLeftButtonDown="ImageParticipantCamera_MouseLeftButtonDown">
+                                    <Image.Style>
+                                        <Style TargetType="{x:Type Image}">
+                                            <Style.Triggers>
+                                                <DataTrigger Binding="{Binding ParticipantHardMuteUnmuteCameraStatus, Mode=OneWay}" Value="False">
+                                                    <Setter Property="Source" Value="Images/hardUnmuteCamera.png" />
+                                                </DataTrigger>
+                                                <DataTrigger Binding="{Binding ParticipantHardMuteUnmuteCameraStatus, Mode=OneWay}" Value="True">
+                                                    <Setter Property="Source" Value="Images/hardMuteCamera.png"/>
+                                                </DataTrigger>
+                                            </Style.Triggers>
+                                        </Style>
+                                    </Image.Style>
+                                </Image>
+
+                                <Image x:Name="ImageParticipantDisconnect" Source="/Images/disconnectCall.png" Grid.Row="0" Grid.Column="17" Height="25" Width="25" MouseLeftButtonDown="ImageParticipantDisconnect_MouseLeftButtonDown"/>
+                            </Grid>
+                            
+                        </DataTemplate>
+                        
+                    </ListBox.ItemTemplate>
+                    
+                </ListBox>
+                
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>
