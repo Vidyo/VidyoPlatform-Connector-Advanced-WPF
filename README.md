@@ -1,2 +1,16 @@
-# VidyoPlatform-Connector-Advanced-WPF
-VidyoPlatform reference app for native Windows (WPF) with advanced features such as high frame rate content share and moderation capabilities.
+## Overview
+**VidyoPlatform-Connector-Advanced-WPF** is a [VidyoPlatform](https://vidyo.github.io/vidyoplatform.github.io) reference application highlighting how to integrate video chat into a native Windows WPF app. This reference application contains common videoconferencing features, as well as advanced features such as high frame rate content sharing, and moderation capabilities.
+
+## Acquire VidyoClient Windows SDK
+Download the latest VidyoClient Windows SDK package for VS 2017 [here](https://static.vidyo.io/latest/package/VidyoClient-WinVS2017SDK.zip) and unzip it.
+
+## Clone Repository
+Navigate to the *VidyoClient-WinVS2017SDK/samples/* directory and clone the repository at that location:<br/>
+git clone https://github.com/Vidyo/VidyoPlatform-Connector-Advanced-WPF.git
+
+## Build and Run Application
+1. Open the solution *VidyoClient-WinVS2017SDK/samples/VidyoPlatform-Connector-Advanced-WPF/VidyoConnector/win-csharp-vidyoplatform/VidyoConnector15.sln* in Visual Studio 2017 or later.
+2. Build and run the application.
+
+## Notes
+1. All files/classes in the 'sdk' solution folder are added as links to actual files in the SDK. So pay attention to its relative paths.
