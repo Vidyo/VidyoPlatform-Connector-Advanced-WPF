@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project ToolsVersion="14.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
   <PropertyGroup>
@@ -89,274 +89,280 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
-    <Compile Include="..\..\..\..\include\csharp\Application.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\Application.cs">
       <Link>VidyoClient Generated Source Files\Application.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\AudioFrame.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\AudioFrame.cs">
       <Link>VidyoClient Generated Source Files\AudioFrame.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\BandwidthSummaryStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\BandwidthSummaryStats.cs">
       <Link>VidyoClient Generated Source Files\BandwidthSummaryStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\ByteArrayHelper.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\ByteArrayHelper.cs">
       <Link>VidyoClient Generated Source Files\ByteArrayHelper.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\Calendar.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\Calendar.cs">
       <Link>VidyoClient Generated Source Files\Calendar.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\CalendarCapabilityKey.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\CalendarCapabilityKey.cs">
       <Link>VidyoClient Generated Source Files\CalendarCapabilityKey.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\CalendarConnectResult.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\CalendarConnectResult.cs">
       <Link>VidyoClient Generated Source Files\CalendarConnectResult.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\CalendarConnProps.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\CalendarConnProps.cs">
       <Link>VidyoClient Generated Source Files\CalendarConnProps.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\CalendarCreateCode.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\CalendarCreateCode.cs">
       <Link>VidyoClient Generated Source Files\CalendarCreateCode.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\CalendarFeedback.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\CalendarFeedback.cs">
       <Link>VidyoClient Generated Source Files\CalendarFeedback.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\CalendarManager.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\CalendarManager.cs">
       <Link>VidyoClient Generated Source Files\CalendarManager.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\CalendarManagerFeedback.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\CalendarManagerFeedback.cs">
       <Link>VidyoClient Generated Source Files\CalendarManagerFeedback.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\CalendarServiceStatus.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\CalendarServiceStatus.cs">
       <Link>VidyoClient Generated Source Files\CalendarServiceStatus.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\CalendarState.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\CalendarState.cs">
       <Link>VidyoClient Generated Source Files\CalendarState.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\Call.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\Call.cs">
       <Link>VidyoClient Generated Source Files\Call.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\CameraControlCapabilities.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\CameraControlCapabilities.cs">
       <Link>VidyoClient Generated Source Files\CameraControlCapabilities.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\ChatMessage.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\ChatMessage.cs">
       <Link>VidyoClient Generated Source Files\ChatMessage.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\Connector.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\Connector.cs">
       <Link>VidyoClient Generated Source Files\Connector.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\ConnectorPKG.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\ConnectorPKG.cs">
       <Link>VidyoClient Generated Source Files\ConnectorPKG.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\Contact.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\Contact.cs">
       <Link>VidyoClient Generated Source Files\Contact.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\ContactInfo.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\ContactInfo.cs">
       <Link>VidyoClient Generated Source Files\ContactInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\Device.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\Device.cs">
       <Link>VidyoClient Generated Source Files\Device.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\Endpoint.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\Endpoint.cs">
       <Link>VidyoClient Generated Source Files\Endpoint.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\EndpointPKG.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\EndpointPKG.cs">
       <Link>VidyoClient Generated Source Files\EndpointPKG.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\EndpointStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\EndpointStats.cs">
       <Link>VidyoClient Generated Source Files\EndpointStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\EventSchedule.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\EventSchedule.cs">
       <Link>VidyoClient Generated Source Files\EventSchedule.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\FormField.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\FormField.cs">
       <Link>VidyoClient Generated Source Files\FormField.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\FormFieldOption.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\FormFieldOption.cs">
       <Link>VidyoClient Generated Source Files\FormFieldOption.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\FormFieldTextWrapMode.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\FormFieldTextWrapMode.cs">
       <Link>VidyoClient Generated Source Files\FormFieldTextWrapMode.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\FormFieldType.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\FormFieldType.cs">
       <Link>VidyoClient Generated Source Files\FormFieldType.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\Gateway.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\Gateway.cs">
       <Link>VidyoClient Generated Source Files\Gateway.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LatencyTestDataStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LatencyTestDataStats.cs">
       <Link>VidyoClient Generated Source Files\LatencyTestDataStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LatencyTestStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LatencyTestStats.cs">
       <Link>VidyoClient Generated Source Files\LatencyTestStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LocalCamera.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LocalCamera.cs">
       <Link>VidyoClient Generated Source Files\LocalCamera.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LocalMicrophone.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LocalMicrophone.cs">
       <Link>VidyoClient Generated Source Files\LocalMicrophone.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LocalMicrophoneStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LocalMicrophoneStats.cs">
       <Link>VidyoClient Generated Source Files\LocalMicrophoneStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LocalMonitor.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LocalMonitor.cs">
       <Link>VidyoClient Generated Source Files\LocalMonitor.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LocalRenderer.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LocalRenderer.cs">
       <Link>VidyoClient Generated Source Files\LocalRenderer.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LocalRendererStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LocalRendererStats.cs">
       <Link>VidyoClient Generated Source Files\LocalRendererStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LocalRendererStreamStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LocalRendererStreamStats.cs">
       <Link>VidyoClient Generated Source Files\LocalRendererStreamStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LocalSpeaker.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LocalSpeaker.cs">
       <Link>VidyoClient Generated Source Files\LocalSpeaker.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LocalSpeakerStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LocalSpeakerStats.cs">
       <Link>VidyoClient Generated Source Files\LocalSpeakerStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LocalSpeakerStreamStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LocalSpeakerStreamStats.cs">
       <Link>VidyoClient Generated Source Files\LocalSpeakerStreamStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LocalVideoSourceStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LocalVideoSourceStats.cs">
       <Link>VidyoClient Generated Source Files\LocalVideoSourceStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LocalWindowShare.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LocalWindowShare.cs">
       <Link>VidyoClient Generated Source Files\LocalWindowShare.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LogDataStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LogDataStats.cs">
       <Link>VidyoClient Generated Source Files\LogDataStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\Logger.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\Logger.cs">
       <Link>VidyoClient Generated Source Files\Logger.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LoggerCategory.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LoggerCategory.cs">
       <Link>VidyoClient Generated Source Files\LoggerCategory.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LogRecord.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LogRecord.cs">
       <Link>VidyoClient Generated Source Files\LogRecord.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\LogStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\LogStats.cs">
       <Link>VidyoClient Generated Source Files\LogStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\MarshalPtrToUtf8.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\MarshalPtrToUtf8.cs">
       <Link>VidyoClient Generated Source Files\MarshalPtrToUtf8.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\MediaConnectionTransportInfo.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\MediaConnectionTransportInfo.cs">
       <Link>VidyoClient Generated Source Files\MediaConnectionTransportInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\MediaFormat.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\MediaFormat.cs">
       <Link>VidyoClient Generated Source Files\MediaFormat.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\Meeting.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\Meeting.cs">
       <Link>VidyoClient Generated Source Files\Meeting.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\MeetingActionResult.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\MeetingActionResult.cs">
       <Link>VidyoClient Generated Source Files\MeetingActionResult.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\MeetingAttendee.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\MeetingAttendee.cs">
       <Link>VidyoClient Generated Source Files\MeetingAttendee.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\MeetingAttendeesSearchResult.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\MeetingAttendeesSearchResult.cs">
       <Link>VidyoClient Generated Source Files\MeetingAttendeesSearchResult.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\MeetingFeedback.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\MeetingFeedback.cs">
       <Link>VidyoClient Generated Source Files\MeetingFeedback.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\MeetingInfo.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\MeetingInfo.cs">
       <Link>VidyoClient Generated Source Files\MeetingInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\MeetingSearchResult.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\MeetingSearchResult.cs">
       <Link>VidyoClient Generated Source Files\MeetingSearchResult.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\NetworkInterface.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\NetworkInterface.cs">
       <Link>VidyoClient Generated Source Files\NetworkInterface.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\NetworkInterfaceStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\NetworkInterfaceStats.cs">
       <Link>VidyoClient Generated Source Files\NetworkInterfaceStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\Participant.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\NetworkService.cs">
+      <Link>VidyoClient Generated Source Files\NetworkService.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\include\csharp\NetworkServiceCAInfo.cs">
+      <Link>VidyoClient Generated Source Files\NetworkServiceCAInfo.cs</Link>
+    </Compile>
+    <Compile Include="..\..\..\..\..\include\csharp\Participant.cs">
       <Link>VidyoClient Generated Source Files\Participant.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\ParticipantGenerationStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\ParticipantGenerationStats.cs">
       <Link>VidyoClient Generated Source Files\ParticipantGenerationStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\ParticipantStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\ParticipantStats.cs">
       <Link>VidyoClient Generated Source Files\ParticipantStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\Property.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\Property.cs">
       <Link>VidyoClient Generated Source Files\Property.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\RateShaperStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\RateShaperStats.cs">
       <Link>VidyoClient Generated Source Files\RateShaperStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\RemoteCamera.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\RemoteCamera.cs">
       <Link>VidyoClient Generated Source Files\RemoteCamera.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\RemoteMicrophone.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\RemoteMicrophone.cs">
       <Link>VidyoClient Generated Source Files\RemoteMicrophone.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\RemoteMicrophoneStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\RemoteMicrophoneStats.cs">
       <Link>VidyoClient Generated Source Files\RemoteMicrophoneStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\RemoteRenderer.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\RemoteRenderer.cs">
       <Link>VidyoClient Generated Source Files\RemoteRenderer.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\RemoteRendererStreamStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\RemoteRendererStreamStats.cs">
       <Link>VidyoClient Generated Source Files\RemoteRendererStreamStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\RemoteSpeaker.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\RemoteSpeaker.cs">
       <Link>VidyoClient Generated Source Files\RemoteSpeaker.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\RemoteSpeakerStreamStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\RemoteSpeakerStreamStats.cs">
       <Link>VidyoClient Generated Source Files\RemoteSpeakerStreamStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\RemoteVideoSourceStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\RemoteVideoSourceStats.cs">
       <Link>VidyoClient Generated Source Files\RemoteVideoSourceStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\RemoteWindowShare.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\RemoteWindowShare.cs">
       <Link>VidyoClient Generated Source Files\RemoteWindowShare.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\Room.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\Room.cs">
       <Link>VidyoClient Generated Source Files\Room.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\RoomInfo.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\RoomInfo.cs">
       <Link>VidyoClient Generated Source Files\RoomInfo.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\RoomStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\RoomStats.cs">
       <Link>VidyoClient Generated Source Files\RoomStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\SizeT.cs">
-      <Link>VidyoClient Generated Source Files\Application.cs</Link>
+    <Compile Include="..\..\..\..\..\include\csharp\SizeT.cs">
+      <Link>VidyoClient Generated Source Files\SizeT.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\Statistics.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\Statistics.cs">
       <Link>VidyoClient Generated Source Files\Statistics.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\User.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\User.cs">
       <Link>VidyoClient Generated Source Files\User.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\UserStats.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\UserStats.cs">
       <Link>VidyoClient Generated Source Files\UserStats.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\VideoCapability.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\VideoCapability.cs">
       <Link>VidyoClient Generated Source Files\VideoCapability.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\VideoFrame.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\VideoFrame.cs">
       <Link>VidyoClient Generated Source Files\VideoFrame.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\VideoPlane.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\VideoPlane.cs">
       <Link>VidyoClient Generated Source Files\VideoPlane.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\VirtualDeviceManager.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\VirtualDeviceManager.cs">
       <Link>VidyoClient Generated Source Files\VirtualDeviceManager.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\VirtualShareManager.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\VirtualShareManager.cs">
       <Link>VidyoClient Generated Source Files\VirtualShareManager.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\VirtualVideoSource.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\VirtualVideoSource.cs">
       <Link>VidyoClient Generated Source Files\VirtualVideoSource.cs</Link>
     </Compile>
-    <Compile Include="..\..\..\..\include\csharp\VirtualWindowShare.cs">
+    <Compile Include="..\..\..\..\..\include\csharp\VirtualWindowShare.cs">
       <Link>VidyoClient Generated Source Files\VirtualWindowShare.cs</Link>
     </Compile>
     <Compile Include="Commands\BindableCommand.cs" />
@@ -490,7 +496,7 @@
     </Resource>
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
-    <Content Include="..\..\..\..\lib\windows\$(Platform)\Release\libVidyoClient.dll">
+    <Content Include="..\..\..\..\..\lib\windows\$(Platform)\Release\libVidyoClient.dll">
       <Link>libVidyoClient.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
@@ -501,19 +507,19 @@
     </Resource>
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
-    <Content Include="..\..\..\..\lib\windows\$(Platform)\Release\libVidyoClient.dll">
+    <Content Include="..\..\..\..\..\lib\windows\$(Platform)\Release\libVidyoClient.dll">
       <Link>libVidyoClient.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
-    <Content Include="..\..\..\..\lib\windows\Win32\Release\libVidyoClient.dll">
+    <Content Include="..\..\..\..\..\lib\windows\Win32\Release\libVidyoClient.dll">
       <Link>libVidyoClient.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
   </ItemGroup>
   <ItemGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
-    <Content Include="..\..\..\..\lib\windows\Win32\Release\libVidyoClient.dll">
+    <Content Include="..\..\..\..\..\lib\windows\Win32\Release\libVidyoClient.dll">
       <Link>libVidyoClient.dll</Link>
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </Content>
