@@ -2,6 +2,8 @@
 using VidyoConnector.ViewModel;
 using VidyoConferenceModeration.ViewModel;
 using SearchUsersDialog.ViewModel;
+using VidyoAnalytics.ViewModel;
+using VidyoConnector.Model;
 
 namespace VidyoConnector.Listeners
 {
@@ -16,6 +18,9 @@ namespace VidyoConnector.Listeners
         protected readonly VidyoConnectorViewModel ViewModel;
         protected readonly VidyoConferenceModerationViewModel ConferenceViewModel;
         protected readonly SearchUsersDialogViewModel SearchUsersDialogViewModel;
+        protected readonly VidyoAnalyticsViewModel AnalyticsViewModel;
+        protected readonly VidyoConnectorShareViewModel SharingViewModel;
+        protected readonly VidyoConnector.Model.RemoteCameraModel RemoteCameraModel;
 
         public ListenerBase(VidyoConnectorViewModel viewModel)
         {
@@ -30,6 +35,21 @@ namespace VidyoConnector.Listeners
         public ListenerBase(SearchUsersDialogViewModel viewModel)
         {
             SearchUsersDialogViewModel = viewModel;
+        }
+
+        public ListenerBase(VidyoAnalyticsViewModel viewModel)
+        {
+            AnalyticsViewModel = viewModel;
+        }
+
+        public ListenerBase(VidyoConnectorShareViewModel viewModel)
+        {
+            SharingViewModel = viewModel;
+        }
+
+       public ListenerBase(VidyoConnector.Model.RemoteCameraModel viewModel)
+        {
+            RemoteCameraModel = viewModel;
         }
 
         public void LogCallback(string name)

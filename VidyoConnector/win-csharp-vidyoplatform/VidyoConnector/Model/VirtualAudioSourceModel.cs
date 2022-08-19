@@ -2,22 +2,19 @@
 
 namespace VidyoConnector.Model
 {
-    public class LocalMicrophoneModel : DeviceModelBase
+
+    public class VirtualAudioSourceModel : DeviceModelBase
     {
-        public LocalMicrophoneModel(LocalMicrophone mic)
+        public VirtualAudioSourceModel(VirtualAudioSource source)
         {
-            Object = mic;
-            if (mic != null) {
-                _displayName = mic.GetName();
-                _id = mic.GetId();
-            }
-            else {
-                // if selected microphone is 'NONE', then check this microphone in 'Content Sharing' menu
-                IsSharingContent = true;
+            Object = source;
+            if (source != null) {
+                _displayName = source.GetName();
+                _id = source.GetId();
             }
         }
 
-        public LocalMicrophone Object { get; private set; }
+        public VirtualAudioSource Object { get; private set; }
 
         private bool _isStreamingAudio;
         /// <summary>

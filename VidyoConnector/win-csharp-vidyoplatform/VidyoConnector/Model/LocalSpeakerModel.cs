@@ -7,19 +7,13 @@ namespace VidyoConnector.Model
         public LocalSpeakerModel(LocalSpeaker speaker)
         {
             Object = speaker;
+            if (speaker != null) {
+                _displayName = speaker.GetName();
+                _id = speaker.GetId();
+            }
         }
 
         public LocalSpeaker Object { get; private set; }
-
-        public string DisplayName
-        {
-            get { return Object == null ? "None" : Object.GetName(); }
-        }
-
-        public string Id
-        {
-            get { return Object == null ? null : Object.GetId(); }
-        }
 
         private bool _isSelected;
         /// <summary>

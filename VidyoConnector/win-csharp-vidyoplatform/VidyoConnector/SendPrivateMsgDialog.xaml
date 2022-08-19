@@ -1,0 +1,43 @@
+﻿<Window x:Class="VidyoConnector.SendPrivateMsgDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VidyoConnector"
+        mc:Ignorable="d"
+        Title="Enter Private Message" Height="200" Width="350" ResizeMode="NoResize">
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="15*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="30*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="80*"/>
+            <ColumnDefinition Width="10*"/>
+        </Grid.ColumnDefinitions>
+
+        <Label x:Name="LabelRecipientName" Content="Recipient Name :" Grid.Row="1" Grid.Column="1" Foreground="#13253B" FontSize="12" FontWeight="Bold"/>
+        <TextBox x:Name="TextBoxSendPrivateMsg" Grid.Row="3" Grid.Column="1" TextWrapping="Wrap" />
+
+        <Grid x:Name="GridInviteUser" Grid.Row="5" Grid.Column="1">
+
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="10*"/>
+            </Grid.ColumnDefinitions>
+
+            <Button x:Name="ButtonCancelPrivateMsg" Content="CANCEL" Grid.Column="1"  Margin="0,1" FontSize="10" Background="#FF666666" Foreground="White" Click="ButtonCancelPrivateMsg_Click"/>
+            <Button x:Name="ButtonSendPrivateMsg" Content="SEND" Grid.Column="3"  Margin="0,1" FontSize="10" Foreground="White" Background="#FF83C36D" Click="ButtonSendPrivateMsg_Click" />
+        </Grid>
+    </Grid>
+</Window>

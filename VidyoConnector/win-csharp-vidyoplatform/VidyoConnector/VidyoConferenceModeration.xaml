@@ -6,7 +6,7 @@
     xmlns:local="clr-namespace:VidyoConferenceModeration"
     xmlns:viewModel="clr-namespace:VidyoConferenceModeration.ViewModel"
     mc:Ignorable="d"
-    Title="Conference Moderation" Height="700" Width="900" MinHeight="700" MinWidth="900">
+    Title="Conference Moderation" Height="700" Width="1100" MinHeight="700" MinWidth="1100">
     
     <Grid x:Name="MainView">
         <Grid.ColumnDefinitions>
@@ -450,7 +450,7 @@
                         <ColumnDefinition Width="0*"/>
                         <ColumnDefinition Width="25*"/>
                         <ColumnDefinition Width="0*"/>
-                        <ColumnDefinition Width="40*"/>
+                        <ColumnDefinition Width="30*"/>
                         <ColumnDefinition Width="0*"/>
                         <ColumnDefinition Width="30*"/>
                         <ColumnDefinition Width="0*"/>
@@ -460,7 +460,13 @@
                         <ColumnDefinition Width="0*"/>
                         <ColumnDefinition Width="25*"/>
                         <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="25*"/>
+                        <ColumnDefinition Width="0*"/>
                         <ColumnDefinition Width="30*"/>
+                        <ColumnDefinition Width="0*"/>
+                        <ColumnDefinition Width="25*"/>
                         <ColumnDefinition Width="4*"/>
                     </Grid.ColumnDefinitions>
 
@@ -469,7 +475,10 @@
                     <Label x:Name="LabelUnraiseHand" Content="Hand" Grid.Row="0" Grid.Column="11" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF666666" FontSize="10" FontWeight="Bold"/>
                     <Label x:Name="LabelHardMuteMic" Content="Audio" Grid.Row="0" Grid.Column="13" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF666666" FontSize="10" FontWeight="Bold"/>
                     <Label x:Name="LabelHardMuteCamera" Content="Video" Grid.Row="0" Grid.Column="15" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF666666" FontWeight="Bold"/>
-                    <Label x:Name="LabelDisconnect" Content="Disconnect" Grid.Row="0" Grid.Column="17" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF666666" FontWeight="Bold"/>
+                    <Label x:Name="LabelCameraPreset" Content="Preset" Grid.Row="0" Grid.Column="17" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF666666" FontWeight="Bold"/>
+                    <Label x:Name="LabelCameraViscaCommand" Content="Visca" Grid.Row="0" Grid.Column="19" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF666666" FontWeight="Bold"/>
+                    <Label x:Name="LabelDisconnect" Content="Disconnect" Grid.Row="0" Grid.Column="21" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF666666" FontWeight="Bold"/>
+                    <Label x:Name="LabelPrivateChat" Content="Chat" Grid.Row="0" Grid.Column="23" FontSize="10" HorizontalAlignment="Center" VerticalAlignment="Bottom" Foreground="#FF666666" FontWeight="Bold"/>
                 </Grid>
             </Grid>
 
@@ -503,7 +512,13 @@
                                     <ColumnDefinition Width="0*"/>
                                     <ColumnDefinition Width="25*"/>
                                     <ColumnDefinition Width="0*"/>
+                                    <ColumnDefinition Width="25*"/>
+                                    <ColumnDefinition Width="0*"/>
+                                    <ColumnDefinition Width="25*"/>
+                                    <ColumnDefinition Width="0*"/>
                                     <ColumnDefinition Width="30*"/>
+                                    <ColumnDefinition Width="0*"/>
+                                    <ColumnDefinition Width="25*"/>
                                     <ColumnDefinition Width="2*"/>
                                 </Grid.ColumnDefinitions>
 
@@ -588,7 +603,11 @@
                                     </Image.Style>
                                 </Image>
 
-                                <Image x:Name="ImageParticipantDisconnect" Source="/Images/disconnectCall.png" Grid.Row="0" Grid.Column="17" Height="25" Width="25" MouseLeftButtonDown="ImageParticipantDisconnect_MouseLeftButtonDown"/>
+                                <Label x:Name="LabelShowCameraPreset" Content="{Binding ParticipantCameraPresetAvailable}" IsEnabled="{Binding ParticipantCameraPresetStatus}"  FontSize="10" Grid.Row="0" Grid.Column="17" HorizontalAlignment="Center" VerticalAlignment="Center" FontStyle="Italic" Grid.RowSpan="2" Foreground="#FF666666" MouseLeftButtonDown="LabelCameraPreset_MouseLeftButtonDown"/>
+                                <Label x:Name="LabelShowVisca" Content="{Binding ParticipantCameraViscaSupported}" IsEnabled="{Binding ParticipantCameraViscaStatus}"  FontSize="10" Grid.Row="0" Grid.Column="19" HorizontalAlignment="Center" VerticalAlignment="Center" FontStyle="Italic" Grid.RowSpan="2" Foreground="#FF666666" MouseLeftButtonDown="LabelCameraVisca_MouseLeftButtonDown"/>
+
+                                <Image x:Name="ImageParticipantDisconnect" Source="/Images/disconnectCall.png" Grid.Row="0" Grid.Column="21" Height="25" Width="25" MouseLeftButtonDown="ImageParticipantDisconnect_MouseLeftButtonDown"/>
+                                <Image x:Name="ImageParticipantPrivateChatMsg" Source="/Images/privateChat.png" Grid.Row="0" Grid.Column="23" Height="15" Width="15" MouseLeftButtonDown="ImageParticipantSendPrivateMessage_MouseLeftButtonDown" ToolTip="Click here to send private msg"/>
                             </Grid>
                             
                         </DataTemplate>

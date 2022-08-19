@@ -7,25 +7,17 @@ namespace VidyoConnector.Model
         public LocalCameraModel(LocalCamera camera)
         {
             Object = camera;
-
-            // if selected camera is 'NONE', then check this camera in 'Content Sharing' menu
-            if (camera == null)
-            {
+            if (camera != null) {
+                _displayName = camera.GetName();
+                _id = camera.GetId();
+            }
+            else {
+                // if selected camera is 'NONE', then check this camera in 'Content Sharing' menu
                 IsSharingContent = true;
             }
         }
 
         public LocalCamera Object { get; private set; }
-
-        public string DisplayName
-        {
-            get { return Object == null ? "None" : Object.GetName(); }
-        }
-
-        public string Id
-        {
-            get { return Object == null ? null : Object.GetId(); }
-        }
 
         private bool _isStreamingVideo;
         /// <summary>

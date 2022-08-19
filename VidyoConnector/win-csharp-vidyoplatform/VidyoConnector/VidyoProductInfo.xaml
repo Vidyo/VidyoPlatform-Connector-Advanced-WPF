@@ -1,0 +1,61 @@
+﻿<Window x:Class="VidyoConnector.VidyoProductInfo"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VidyoConnector"
+        mc:Ignorable="d"
+        Title="Set Product Information" Height="150" Width="400">
+    <Grid>
+        
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="90*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+
+        <Grid x:Name="ProductInfo" Grid.Column="1">
+            <Grid.RowDefinitions>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="25*"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="25*"/>
+                <RowDefinition Height="5*"/>
+                <RowDefinition Height="30*"/>
+                <RowDefinition Height="5*"/>
+            </Grid.RowDefinitions>
+
+            <Grid x:Name="ProductInfoName" Grid.Row="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="65*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label x:Name="LabelApplicationName" Content="Application Name:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Foreground="#FF666666" FontWeight="Bold" FontSize="12"/>
+                <TextBox x:Name="TextBoxApplicationName" Grid.Row="1" Grid.Column="2" BorderBrush="#FF666666"/>
+            </Grid>
+
+            <Grid x:Name="ProductInfoValue" Grid.Row="3">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="40*"/>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="65*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label x:Name="LabelApplicationNameVersion" Content="Application Version:" Grid.Row="1" Grid.Column="0" HorizontalAlignment="Left" Foreground="#FF666666" FontWeight="Bold" FontSize="12"/>
+                <TextBox x:Name="TextBoxApplicationVersion" Grid.Row="1" Grid.Column="2" BorderBrush="#FF666666"/>
+            </Grid>
+
+            <Grid x:Name="ProductInfoSet" Grid.Row="5">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="20*"/>
+                    <ColumnDefinition Width="60*"/>
+                    <ColumnDefinition Width="20*"/>
+                </Grid.ColumnDefinitions>
+
+                <Button x:Name="ButtonSetProductInfo" Content="SET" Grid.Column="1"  Margin="5,5,5,5" FontSize="12" Foreground="White" Background="#FF83C36D" Click="ButtonSetProductInfo_Click" />
+            </Grid>
+        </Grid>
+    </Grid>
+</Window>

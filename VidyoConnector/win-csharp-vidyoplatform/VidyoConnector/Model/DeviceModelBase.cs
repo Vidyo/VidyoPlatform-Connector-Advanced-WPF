@@ -9,6 +9,24 @@ namespace VidyoConnector.Model
     /// </summary>
     public abstract class DeviceModelBase : INotifyPropertyChanged
     {
+        public DeviceModelBase()
+        {
+            _displayName = "None";
+            _id = string.Empty;
+        }
+
+        protected string _displayName;
+        public string DisplayName
+        {
+            get { return _displayName; }
+        }
+
+        protected string _id;
+        public string Id
+        {
+            get { return _id; }
+        }
+
         #region INotifyPropertyChanged
 
         public event PropertyChangedEventHandler PropertyChanged;

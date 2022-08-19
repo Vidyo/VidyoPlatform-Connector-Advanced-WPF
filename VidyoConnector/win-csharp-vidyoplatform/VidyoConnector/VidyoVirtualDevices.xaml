@@ -1,0 +1,91 @@
+﻿<Window x:Class="VidyoConnector.VidyoVirtualDevices"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VidyoConnector"
+        mc:Ignorable="d"
+        Title="VidyoVirtualDevices" ResizeMode="NoResize" Height="200" Width="550">
+
+    <Grid Background="#4CDEDEDE">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="10*"/>
+            <ColumnDefinition Width="500*"/>
+            <ColumnDefinition Width="10*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="100*"/>
+            <RowDefinition Height="50*"/>
+            <RowDefinition Height="10*"/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="GridDeviceType" Grid.Column="1" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="50*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="50*"/>
+            </Grid.ColumnDefinitions>
+
+            <RadioButton x:Name="RadioButtonVirtualAudioDevice" GroupName="VirtualDevice" Content="Virtual audio device" 
+                         Checked="RadioButtonVirtualAudioDevice_Checked" Grid.Column="0" FontSize="20" FontWeight="Bold"
+                         Foreground="#FF666666" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+            <RadioButton x:Name="RadioButtonVirtualVideoDevice" GroupName="VirtualDevice" Content="Virtual video device" 
+                         Checked="RadioButtonVirtualVideoDevice_Checked" Grid.Column="2" FontSize="20" FontWeight="Bold" 
+                         Foreground="#FF666666" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+            <Grid x:Name="GridVirtualVideoDeviceType" Grid.Column="2" Visibility="Hidden">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="30*"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="30*"/>
+                    <RowDefinition Height="5*"/>
+                </Grid.RowDefinitions>
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="5*"/>
+                    <ColumnDefinition Width="50*"/>
+                </Grid.ColumnDefinitions>
+
+                <RadioButton x:Name="RadioButtonVirtualVideoCameraType" GroupName="VirtualDevice" Content="Virtual video camera" 
+                         Grid.Column="0" Grid.Row="1" Grid.ColumnSpan="3" FontSize="15" FontWeight="Bold"
+                         Foreground="#FF666666" HorizontalAlignment="Center" VerticalAlignment="Center" />
+
+                <RadioButton x:Name="RadioButtonVirtualVideoShareType" GroupName="VirtualDevice" Content="Virtual video share" 
+                         Grid.Column="0" Grid.Row="3" Grid.ColumnSpan="3" FontSize="15" FontWeight="Bold" 
+                         Foreground="#FF666666" HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Grid>
+
+        </Grid>
+
+        <Grid x:Name="GridButton" Grid.Column="1" Grid.Row="2">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="450*"/>
+                <ColumnDefinition Width="9*"/>
+                <ColumnDefinition Width="100*"/>
+            </Grid.ColumnDefinitions>
+            
+            <Button x:Name="CreateDevice" Content="Create" FontSize="15" Foreground="White" 
+                    Background="#FF83C36D" Click="CreateDevice_Click">
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+
+            <Button x:Name="FeedData" Content="Feed" FontSize="10" Foreground="White" 
+                    Background="#FF83C36D" Click="FeedData_Click"  Grid.Column="2" >
+                <Button.Resources>
+                    <Style TargetType="Border">
+                        <Setter Property="CornerRadius" Value="10"/>
+                    </Style>
+                </Button.Resources>
+            </Button>
+        </Grid>
+
+
+    </Grid>
+</Window>

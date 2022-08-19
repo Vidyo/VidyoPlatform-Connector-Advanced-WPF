@@ -9,9 +9,9 @@ namespace VidyoConnector.Listeners
 
         public void OnChatMessageReceived(Participant participant, ChatMessage chatMessage)
         {
-            if (participant != null && chatMessage != null)
+            if (chatMessage != null)
             {
-                ViewModel.AddChatMessage(participant.GetName(), chatMessage.body);
+                ViewModel.AddChatMessage(chatMessage.userName, chatMessage.body);
             }
         }
     }
