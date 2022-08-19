@@ -1,0 +1,174 @@
+﻿<Window x:Class="VidyoConnector.VidyoConferenceRendererOptions"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VidyoConnector"
+        mc:Ignorable="d"
+        Title="Renderer Options" ResizeMode="NoResize" Height="580" Width="450">
+    
+    <Grid Background="#4CDEDEDE">
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="90*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="75*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="GridRendererOptions" Grid.Column="1" Grid.Row="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="0*"/>
+                <ColumnDefinition Width="45*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="30*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="10*"/>
+                <ColumnDefinition Width="0*"/>
+            </Grid.ColumnDefinitions>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="50*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+                <RowDefinition Height="20*"/>
+                <RowDefinition Height="2*"/>
+            </Grid.RowDefinitions>
+
+            <Label x:Name="LabelVerticalVideoCentering" Content="Vertical Video Centering" Grid.Row="1" Grid.Column="1" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+            <ComboBox x:Name="ComboBoxVerticalVideoCentering" IsEnabled="{Binding ElementName=CheckboxVerticalVideoCentering, Path=IsChecked}" Grid.Row="1" Grid.Column="3" Foreground="#FF13253B" FontSize="12">
+                <ComboBoxItem Content="false"/>
+                <ComboBoxItem Content="true"/>
+            </ComboBox>
+            <CheckBox x:Name="CheckboxVerticalVideoCentering" Grid.Row="1" Grid.Column="5" Foreground="#FF666666" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            
+            <Label x:Name="LabelFECCIconCustomLayout" Content="FECC Icon Custom Layout" Grid.Row="3" Grid.Column="1" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+            <ComboBox x:Name="ComboBoxFECCIconCustomLayout" IsEnabled="{Binding ElementName=CheckboxFECCIconCustomLayout, Path=IsChecked}" Grid.Row="3" Grid.Column="3" Foreground="#FF13253B" FontSize="12">
+                <ComboBoxItem Content="false"/>
+                <ComboBoxItem Content="true"/>
+            </ComboBox>
+            <CheckBox x:Name="CheckboxFECCIconCustomLayout" Grid.Row="3" Grid.Column="5" Foreground="#FF666666" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            
+            <Label x:Name="LabelViewingDistance" Content="Viewing Distance" Grid.Row="5" Grid.Column="1" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+            <TextBox x:Name="TextBoxViewingDistance" IsEnabled="{Binding ElementName=CheckboxViewingDistance, Path=IsChecked}" Grid.Row="5" Grid.Column="3" Grid.ColumnSpan="1" Text="{Binding ViewingDistanceText, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,5"/>
+            <CheckBox x:Name="CheckboxViewingDistance" Grid.Row="5" Grid.Column="5" Foreground="#FF666666" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+            
+            <Label x:Name="LabelShowAudioTiles" Content="Show Audio Tiles" Grid.Row="7" Grid.Column="1" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+            <ComboBox x:Name="ComboBoxShowAudioTiles" IsEnabled="{Binding ElementName=CheckboxShowAudioTiles, Path=IsChecked}" Grid.Row="7" Grid.Column="3" Foreground="#FF13253B" FontSize="12">
+                <ComboBoxItem Content="false"/>
+                <ComboBoxItem Content="true"/>
+            </ComboBox>
+            <CheckBox x:Name="CheckboxShowAudioTiles"  Grid.Row="7" Grid.Column="5" Foreground="#FF666666" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+            <Label x:Name="LabelPixelDensity" Content="Pixel Density" Grid.Row="9" Grid.Column="1" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+            <TextBox x:Name="TextBoxPixelDensity" IsEnabled="{Binding ElementName=CheckboxPixelDensity, Path=IsChecked}" Grid.Row="9" Grid.Column="3" Grid.ColumnSpan="1" Text="{Binding PixelDensityText, UpdateSourceTrigger=PropertyChanged}" Margin="0,5,0,5"/>
+            <CheckBox x:Name="CheckboxPixelDensity" Grid.Row="9" Grid.Column="5" Foreground="#FF666666" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+            <Label x:Name="LabelTouchInputDevice" Content="Touch As Input Device" Grid.Row="11" Grid.Column="1" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+            <ComboBox x:Name="ComboBoxTouchInputDevice" IsEnabled="{Binding ElementName=CheckboxTouchInputDevice, Path=IsChecked}" Grid.Row="11" Grid.Column="3" Foreground="#FF13253B" FontSize="12">
+                <ComboBoxItem Content="false"/>
+                <ComboBoxItem Content="true"/>
+            </ComboBox>
+            <CheckBox x:Name="CheckboxTouchInputDevice"  Grid.Row="11" Grid.Column="5" Foreground="#FF666666" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+            <Label x:Name="LabelExpandedCameraControl" Content="Expanded Camera Control" Grid.Row="13" Grid.Column="1" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+            <ComboBox x:Name="ComboBoxExpandedCameraControl" IsEnabled="{Binding ElementName=CheckboxExpandedCameraControl, Path=IsChecked}" Grid.Row="13" Grid.Column="3" Foreground="#FF13253B" FontSize="12">
+                <ComboBoxItem Content="false"/>
+                <ComboBoxItem Content="true"/>
+            </ComboBox>
+            <CheckBox x:Name="CheckboxExpandedCameraControl"  Grid.Row="13" Grid.Column="5" Foreground="#FF666666" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+            <Grid x:Name="GridSetPipPositionLabel" Grid.Row="15" Grid.Column="1">
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="50*"/>
+                    <ColumnDefinition Width="50*"/>
+                </Grid.ColumnDefinitions>
+
+                <Label x:Name="LabelSetPipPosition" Content="Pip Position" Grid.Column="0" VerticalAlignment="Center" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+
+                <Grid x:Name="GridSetPipPositionLabel_" Grid.Row="15" Grid.Column="1">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="30*"/>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="30*"/>
+                        <RowDefinition Height="5*"/>
+                        <RowDefinition Height="30*"/>
+                    </Grid.RowDefinitions>
+
+                    <Label x:Name="LabelSetPipPositionX" Content="x-axis" Grid.Row="0"  VerticalAlignment="Center" HorizontalAlignment="Center" FontSize="12" FontWeight="Bold" Foreground="Black"/>
+                    <Label x:Name="LabelSetPipPositionY" Content="y-axis" Grid.Row="2"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+                    <Label x:Name="LabelSetPipPositionLockPin" Content="lock pin" Grid.Row="4"  VerticalAlignment="Center" HorizontalAlignment="Center" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+                </Grid>
+            </Grid>
+            <Grid x:Name="GridSetPipPositionValue" Grid.Row="15" Grid.Column="3">
+                <Grid.RowDefinitions>
+                    <RowDefinition Height="30*"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="30*"/>
+                    <RowDefinition Height="5*"/>
+                    <RowDefinition Height="30*"/>
+                </Grid.RowDefinitions>
+                <ComboBox x:Name="ComboBoxSetPipPositionX" IsEnabled="{Binding ElementName=CheckboxSetPipPosition, Path=IsChecked}" Grid.Row="0" Foreground="#FF13253B" FontSize="12">
+                    <ComboBoxItem Content="PipPositionLeft"/>
+                    <ComboBoxItem Content="PipPositionCenter"/>
+                    <ComboBoxItem Content="PipPositionRight"/>
+                </ComboBox>
+                <ComboBox x:Name="ComboBoxSetPipPositionY" IsEnabled="{Binding ElementName=CheckboxSetPipPosition, Path=IsChecked}" Grid.Row="2" Foreground="#FF13253B" FontSize="12">
+                    <ComboBoxItem Content="PipPositionTop"/>
+                    <ComboBoxItem Content="PipPositionCenter"/>
+                    <ComboBoxItem Content="PipPositionBottom"/>
+                </ComboBox>
+                <ComboBox x:Name="ComboBoxSetPipPositionLockPin" IsEnabled="{Binding ElementName=CheckboxSetPipPosition, Path=IsChecked}" Grid.Row="4" Foreground="#FF13253B" FontSize="12">
+                    <ComboBoxItem Content="true"/>
+                    <ComboBoxItem Content="false"/>
+                </ComboBox>
+            </Grid>
+            <CheckBox x:Name="CheckboxSetPipPosition"  Grid.Row="15" Grid.Column="5" Foreground="#FF666666" IsEnabled="False"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+            <Label x:Name="LabelSetBorderStyle" Content="Border Style" Grid.Row="17" Grid.Column="1"  VerticalAlignment="Center" HorizontalAlignment="Left" FontSize="12" FontWeight="Bold" Foreground="Black"/>
+            <ComboBox x:Name="ComboBoxSetBorderStyle" IsEnabled="{Binding ElementName=CheckboxSetBorderStyle, Path=IsChecked}" Grid.Row="0" Foreground="#FF13253B" FontSize="12">
+                <ComboBoxItem Content="None"/>
+                <ComboBoxItem Content="Same"/>
+                <ComboBoxItem Content="Highlight"/>
+                <ComboBoxItem Content="Flash"/>
+            </ComboBox>
+            <CheckBox x:Name="CheckboxSetBorderStyle"  Grid.Row="17" Grid.Column="5" Foreground="#FF666666" IsEnabled="true"  HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+            <Label x:Name="LabelPreviewMirroring" Content="Preview Mirroring" Grid.Row="19" Grid.Column="1" Foreground="#FF13253B" FontSize="12" FontWeight="Bold"/>
+            <ComboBox x:Name="ComboBoxPreviewMirroring" IsEnabled="{Binding ElementName=CheckboxPreviewMirroring, Path=IsChecked}" Grid.Row="19" Grid.Column="3" Foreground="#FF13253B" FontSize="12">
+                <ComboBoxItem Content="false"/>
+                <ComboBoxItem Content="true"/>
+            </ComboBox>
+            <CheckBox x:Name="CheckboxPreviewMirroring"  Grid.Row="19" Grid.Column="5" Foreground="#FF666666" HorizontalAlignment="Center" VerticalAlignment="Center"/>
+
+        </Grid>
+
+        <Button x:Name="RendererApplyOptions" Content="Apply" FontSize="10" Grid.Column="1" Grid.ColumnSpan="1" Grid.Row="3" Foreground="White" Background="#FF83C36D" Click="ButtonApplyRendererOptions_Click">
+            <Button.Resources>
+                <Style TargetType="Border">
+                    <Setter Property="CornerRadius" Value="5"/>
+                </Style>
+            </Button.Resources>
+        </Button>
+    </Grid>
+</Window>

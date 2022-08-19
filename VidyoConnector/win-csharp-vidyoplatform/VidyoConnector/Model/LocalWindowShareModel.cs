@@ -1,4 +1,5 @@
 ﻿using VidyoClient;
+using static VidyoClient.LocalWindowShare;
 
 namespace VidyoConnector.Model
 {
@@ -7,19 +8,13 @@ namespace VidyoConnector.Model
         public LocalWindowShareModel(LocalWindowShare window)
         {
             Object = window;
+            if (window != null) {
+                _displayName = window.GetName();
+                _id = window.GetId();
+            }
         }
 
         public LocalWindowShare Object { get; private set; }
-
-        public string DisplayName
-        {
-            get { return Object == null ? null : Object.GetName(); }
-        }
-
-        public string Id
-        {
-            get { return Object == null ? null : Object.GetId(); }
-        }
 
         private bool _isSelected;
         /// <summary>
@@ -32,6 +27,17 @@ namespace VidyoConnector.Model
             {
                 _isSelected = value;
                 OnPropertyChanged();
+            }
+        }
+
+        /// <summary>
+        /// Indicates whether a window share window is minimized.
+        /// </summary>
+        public bool IsMinimized
+        {
+            get
+            {
+                return Object.GetWindowState() == LocalWindowShareState.LocalwindowsharestateMinimized;
             }
         }
     }

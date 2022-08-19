@@ -21,10 +21,10 @@ namespace VidyoConferenceModeration
         ParticipantCommandType participantCommand;
 
 
-        public ConferenceModerationWindow()
+        public ConferenceModerationWindow(object context)
         {
             InitializeComponent();
-            viewModel = new VidyoConferenceModerationViewModel();
+            viewModel = new VidyoConferenceModerationViewModel(context);
             DataContext = viewModel;
             viewModel.CloseAction = new Action(() => this.Close());
             participantCommand = ParticipantCommandType.UnknownCommand;
@@ -134,6 +134,11 @@ namespace VidyoConferenceModeration
             participantCommand = ParticipantCommandType.UnknownCommand;
         }
 
+        private void ImageParticipantSendPrivateMessage_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            participantCommand = ParticipantCommandType.SendPrivateMsgCommand;
+        }
+
         private void ImageParticipantHand_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             participantCommand = ParticipantCommandType.HandCommand;
@@ -147,6 +152,16 @@ namespace VidyoConferenceModeration
         private void ImageParticipantCamera_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
         {
             participantCommand = ParticipantCommandType.CameraCommand;
+        }
+
+        private void LabelCameraPreset_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            participantCommand = ParticipantCommandType.CameraPresetCommand;
+        }
+
+        private void LabelCameraVisca_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)
+        {
+            participantCommand = ParticipantCommandType.CameraViscaCommand;
         }
 
         private void ImageParticipantDisconnect_MouseLeftButtonDown(object sender, MouseButtonEventArgs e)

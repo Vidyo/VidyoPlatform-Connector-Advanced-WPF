@@ -27,6 +27,8 @@ namespace VidyoConnector.ViewModel
         public ulong LMI_NSECS_PER_SEC = 1000000000;
         private static Connector _connector;
         private IntPtr _handle;
+        private uint _width;
+        private uint _height;
         ConnectorConferenceMode _conferenceMode;
         private DispatcherTimer _lobbyModeTimer;
         private int _lobbyModeTickCounter;
@@ -37,15 +39,16 @@ namespace VidyoConnector.ViewModel
         public static Connector GetConnectorInstance { get { return _connector; } }
 
         private VidyoConferenceModerationViewModel confViewModel;
+        private VidyoConnectorShareViewModel conferenceShareViewModel;
 
         public VidyoConnectorViewModel()
         {
             LocalCameras = new ObservableCollection<LocalCameraModel>();
             LocalMicrophones = new ObservableCollection<LocalMicrophoneModel>();
             LocalSpeakers = new ObservableCollection<LocalSpeakerModel>();
-            LocalWindows = new ObservableCollection<LocalWindowShareModel>();
-            LocalMonistors = new ObservableCollection<LocalMonitorModel>();
             ChatMessages = new ObservableCollection<ChatMessageModel>();
+            VirtualAudioSources = new ObservableCollection<VirtualAudioSourceModel>();
+
             Portal = @"vidyocloud.com";
             _lobbyModeTimer = new DispatcherTimer();
             _lobbyModeTickCounter = 0;
@@ -59,35 +62,15 @@ namespace VidyoConnector.ViewModel
         /// <param name="height">Height of video area.</param>
         public void Init(IntPtr handle, uint width, uint height)
         {
-            ConnectorPKG.Initialize();
-            Log.Info("VidyoConnector initialized.");
-
-            _connector = new Connector(handle, Connector.ConnectorViewStyle.ConnectorviewstyleDefault, 8, "all@VidyoClient", "VidyoClient.log", 0);
             _handle = handle;
-
-            // This should be called on each window resizing.
-            _connector.ShowViewAtPoints(handle, 0, 0, width, height);
-            Log.Info(string.Format("Showing view with width={0} and height={1}", width, height));
+            _width = width;
+            _height = height;
 
             // Adding Null's to devices collection, which is 'None' in GUI. Selecting 'None' means no device will be used.
             LocalCameras.Add(new LocalCameraModel(null));
             LocalMicrophones.Add(new LocalMicrophoneModel(null));
             LocalSpeakers.Add(new LocalSpeakerModel(null));
-
-            // Registering to events we want to handle.
-            _connector.RegisterLocalCameraEventListener(new LocalCameraListener(this));
-            _connector.RegisterLocalWindowShareEventListener(new LocalWindowShareListener(this));
-            _connector.RegisterLocalMicrophoneEventListener(new LocalMicropfoneListener(this));
-            _connector.RegisterLocalSpeakerEventListener(new LocalSpeakerListener(this));
-            _connector.RegisterParticipantEventListener(new ParticipantListener(this));
-            _connector.RegisterLocalMonitorEventListener(new LocalMonitorListener(this));
-            //_connector.RegisterLogEventListener(new LogListener(this), "*@VidyoClient");
-            _connector.RegisterMessageEventListener(new MessageListener(this));
-            _connector.ReportLocalParticipantOnJoined(true);
-            _connector.RegisterConferenceModeEventListener(new ConferenceModeListener(this));
-            _connector.RegisterConnectionPropertiesEventListener(new ConnectionPropertiesListener(this));
-            _connector.RegisterLectureModeEventListener(new LectureModeListener(this));
-            _connector.RegisterModerationCommandEventListener(new ModerationCommandListener(this));
+            VirtualAudioSources.Add(new VirtualAudioSourceModel(null));
 
             // We are not in call when application started.
             ConnectionState = ConnectionState.NotConnected;
@@ -98,21 +81,30 @@ namespace VidyoConnector.ViewModel
             IsMicrophoneOn = true;
             IsSpeakerOn = true;
             EnableDebug = false;
+            EnablePtz = false;
             EnableHighFramerateShare = false;
             IsBtnCameraEnabled = true;
             IsBtnMicrophoneEnabled = true;
+            IsSetProductInfoEnabled = true;
 
-            ParseCommandLineArgs();    
+            conferenceShareViewModel = new VidyoConnectorShareViewModel();
+
+            ParseCommandLineArgs();
+            VidyoConnectorInit();
         }
         public void Deinit()
         {
-            _connector.Dispose(false);
-            _connector = null;
+            VidyoConnectorUninit();
         }
 
         public void SetConferenceModerationViewModel(VidyoConferenceModerationViewModel viewmodel)
         {
             confViewModel = viewmodel;
+        }
+
+        public VidyoConnectorShareViewModel GetVidyoConnectorShareViewModel()
+        {
+            return conferenceShareViewModel;
         }
 
         public bool IsLocalUserGuest()
@@ -157,7 +149,12 @@ namespace VidyoConnector.ViewModel
         /// <param name="height">Height of video area.</param>
         public void AdjustVideoPanelSize(IntPtr handle, uint width, uint height)
         {
-            _connector.ShowViewAtPoints(handle, 0, 0, width, height);
+            _width = width;
+            _height = height;
+            if (_connector != null)
+            {
+                _connector.ShowViewAtPoints(handle, 0, 0, width, height);
+            }
         }
 
         #region Devices
@@ -181,9 +178,7 @@ namespace VidyoConnector.ViewModel
 
         public ObservableCollection<LocalSpeakerModel> LocalSpeakers { get; set; }
 
-        public ObservableCollection<LocalWindowShareModel> LocalWindows { get; set; }
-
-        public ObservableCollection<LocalMonitorModel> LocalMonistors { get; set; }
+        public ObservableCollection<VirtualAudioSourceModel> VirtualAudioSources { get; set; }
 
         #endregion
 
@@ -222,7 +217,7 @@ namespace VidyoConnector.ViewModel
             var cameraToRemove = LocalCameras.FirstOrDefault(x => x.Id == camera.Id);
             if (cameraToRemove != null)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() => LocalCameras.Remove(cameraToRemove));
+                System.Windows.Application.Current.Dispatcher.InvokeAsync(() => { LocalCameras.Remove(cameraToRemove); });
                 Log.Info(string.Format("Removed local camera: name={0} id={1}", cameraToRemove.DisplayName,
                     cameraToRemove.Id));
             }
@@ -313,16 +308,14 @@ namespace VidyoConnector.ViewModel
             }
             else
             {
-                if ((confViewModel != null) && (confViewModel.GetLocalParticipantHardCameraMuteStatus()) &&
-                    (confViewModel.IsAllowForModerationOperation()))
+                bool isHardMuted = (confViewModel != null && confViewModel.GetLocalParticipantHardCameraMuteStatus());
+                if (isHardMuted && confViewModel.IsAllowForModerationOperation())
                 {
                     _connector.DisableVideoForParticipant(confViewModel.GetLocalParticipantInfo(), false, "Unmute Local Camera");
                 }
-                _connector.SetCameraPrivacy(false);
+                IsCameraOn = _connector.SetCameraPrivacy(false);
                 Log.Info("Local camera unmuted.");
-                IsCameraOn = true;
             }
-
             if (confViewModel != null)
             {
                 confViewModel.SetLocalCameraPrivacy(IsCameraOn);
@@ -332,18 +325,11 @@ namespace VidyoConnector.ViewModel
         public void OnLocalCameraStateUpdated(LocalCamera localCamera, Device.DeviceState state)
         {
             if (confViewModel != null)
-            {
                 confViewModel.OnLocalCameraStateUpdated(localCamera, state);
-            }
 
-            if (state == Device.DeviceState.DevicestateStopped)
-            {
-                IsCameraOn = false;
-            }
-            if (state == Device.DeviceState.DevicestateStarted)
-            {
-                IsCameraOn = true;
-            }
+            if (LocalCameras.FirstOrDefault(x => (x.IsStreamingVideo && x.Id != null))?.Object != null)
+                IsCameraOn = (state == Device.DeviceState.DevicestateStarted) ? true :
+                    (state == Device.DeviceState.DevicestateStopped) ? false : IsCameraOn;
         }
 
         #endregion
@@ -383,7 +369,7 @@ namespace VidyoConnector.ViewModel
             var micToRemove = LocalMicrophones.FirstOrDefault(x => x.Id == mic.Id);
             if (micToRemove != null)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() => { LocalMicrophones.Remove(micToRemove); });
+                System.Windows.Application.Current.Dispatcher.InvokeAsync(() => { LocalMicrophones.Remove(micToRemove); });
                 Log.Info(string.Format("Removed local microphone: name={0} id={1}", micToRemove.DisplayName,
                     micToRemove.Id));
             }
@@ -474,16 +460,14 @@ namespace VidyoConnector.ViewModel
             }
             else
             {
-                if((confViewModel!=null) && (confViewModel.GetLocalParticipantHardMicrophoneMuteStatus()) &&
-                    (confViewModel.IsAllowForModerationOperation()))
+                bool isHardMuted = (confViewModel != null && confViewModel.GetLocalParticipantHardMicrophoneMuteStatus());
+                if (isHardMuted && confViewModel.IsAllowForModerationOperation())
                 {
                     _connector.DisableAudioForParticipant(confViewModel.GetLocalParticipantInfo(), false, "Unmute Local Microphone");
                 }
-                _connector.SetMicrophonePrivacy(false);
+                IsMicrophoneOn = _connector.SetMicrophonePrivacy(false);
                 Log.Info("Local microphone unmuted.");
-                IsMicrophoneOn = true;
             }
-
             if (confViewModel != null)
             {
                 confViewModel.SetLocalMicrophonePrivacy(IsMicrophoneOn);
@@ -493,17 +477,114 @@ namespace VidyoConnector.ViewModel
         public void OnLocalMicrophoneStateUpdated(LocalMicrophone localMicrophone, Device.DeviceState state)
         {
             if (confViewModel != null)
-            {
                 confViewModel.OnLocalMicrophoneStateUpdated(localMicrophone, state);
-            }
 
-            if (state == Device.DeviceState.DevicestateStopped)
+            if (LocalMicrophones.FirstOrDefault(x => (x.IsStreamingAudio && x.Id != null))?.Object != null)
+                IsMicrophoneOn = (state == Device.DeviceState.DevicestateStarted || state == Device.DeviceState.DevicestateResumed) ?
+                    true : (state == Device.DeviceState.DevicestateStopped || state == Device.DeviceState.DevicestatePaused) ? false : IsMicrophoneOn;
+        }
+
+        #endregion
+
+        #region VirtualAudioSource
+
+        public void AddVirtualAudioSource(VirtualAudioSourceModel source)
+        {
+            if (VirtualAudioSources.FirstOrDefault(x => x.Id == source.Id) == null)
             {
-                IsMicrophoneOn = false;
+                System.Windows.Application.Current.Dispatcher.Invoke(() => { VirtualAudioSources.Add(source); });
+                Log.Info(string.Format("Added virtual audio source: name={0} id={1}.", source.DisplayName, source.Id));
             }
-            if (state == Device.DeviceState.DevicestateStarted)
+        }
+
+        public void RemoveVirtualAudioSource(VirtualAudioSourceModel source)
+        {
+            var sourceToRemove = VirtualAudioSources.FirstOrDefault(x => x.Id == source.Id);
+            if (sourceToRemove != null)
             {
-                IsMicrophoneOn = true;
+                System.Windows.Application.Current.Dispatcher.InvokeAsync(() => { VirtualAudioSources.Remove(sourceToRemove); });
+                Log.Info(string.Format("Removed virtual audio source: name={0} id={1}.", sourceToRemove.DisplayName, sourceToRemove.Id));
+            }
+        }
+       
+        public void SetSelectedVirtualAudioSource(VirtualAudioSourceModel source)
+        {
+            var sourceToSelect = VirtualAudioSources.FirstOrDefault(x => x.Id == source.Id);
+            if (sourceToSelect != null) 
+            {                
+                VirtualAudioSources.Select(x =>
+                {
+                    x.IsStreamingAudio = false;
+                    return x;
+                }).ToList();
+
+                sourceToSelect.IsStreamingAudio = true;
+                Log.Info(string.Format("Virtual audio source selected: name={0} id={1}.", sourceToSelect.DisplayName, sourceToSelect.Id));
+            }
+        }
+        
+        public void ReleasedVirtualAudioSourcExternalMediaBuffer(VirtualAudioSourceModel source, byte[] buffer, SizeT size)
+        {
+            Log.Debug(string.Format("VidyoClient no longer uses a raw audio buffer for {0}({1}) virtual audio source.", source.DisplayName, source.Id));
+        }
+        
+        public void SetSelectedVirtualMicrophone(object obj)
+        {
+            var source = obj as VirtualAudioSourceModel;
+            if (source != null)
+            {
+                SetSelectedVirtualAudioSource(source);
+            }
+        }
+        
+        private void SelectVirtualMicrophone()
+        {
+            var source = VirtualAudioSources.FirstOrDefault(x => x.IsStreamingAudio);
+            if (source != null)
+            {
+                _connector.SelectVirtualMicrophone(source.Object);
+                Log.Info(string.Format("Set selected local speaker: name={0} id={1}.", source.DisplayName, source.Id));
+            }
+        }
+        
+        public void OnVirtualAudioSourceStateUpdated(VirtualAudioSourceModel source, Device.DeviceState state)
+        {
+            Log.Info(string.Format("State for {0}({1}) virtual audio source updated, state: {2}.", source.DisplayName, source.Id, state.ToString()));
+        }
+
+        private void ShareVirtualAudioContent()
+        {
+            var sourceToShare = VirtualAudioSources.FirstOrDefault(x => x.IsSharingContent);
+            if (sourceToShare != null)
+            {
+                _connector.SelectVirtualAudioContentShare(sourceToShare.Object);
+                Log.InfoFormat("Set selected virtual audio content sharing: name={0} id={1}", sourceToShare.DisplayName, sourceToShare.Id);
+            }
+        }
+
+        public void SetSelectedVirtualAudioContent(object obj)
+        {
+            var source = obj as VirtualAudioSourceModel;
+            if (source != null)
+            {
+                SetSelectedVirtualAudioContent(source);
+            }
+        }
+
+        public void SetSelectedVirtualAudioContent(VirtualAudioSourceModel source)
+        {
+            var sourceToSelect = VirtualAudioSources.FirstOrDefault(x => x.Id == source.Id);
+            if (sourceToSelect != null)
+            {
+                VirtualAudioSources.Select(x =>
+                {
+                    x.IsSharingContent = false;
+                    return x;
+                }) .ToList();
+
+                sourceToSelect.IsSharingContent = true;
+
+                Log.InfoFormat("Virtual audio content share selected: name={0} id={1}", sourceToSelect.DisplayName, sourceToSelect.IsSharingContent);
             }
         }
 
@@ -531,7 +612,7 @@ namespace VidyoConnector.ViewModel
             var speakerToRemove = LocalSpeakers.FirstOrDefault(x => x.Id == speaker.Id);
             if (speakerToRemove != null)
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() => { LocalSpeakers.Remove(speakerToRemove); });
+                System.Windows.Application.Current.Dispatcher.InvokeAsync(() => { LocalSpeakers.Remove(speakerToRemove); });
                 Log.Info(string.Format("Removed local speaker: name={0} id={1}", speakerToRemove.DisplayName,
                     speakerToRemove.Id));
             }
@@ -605,151 +686,19 @@ namespace VidyoConnector.ViewModel
 
         #endregion
 
-        #region LocalWindows
-
-        /*
-         * This section contains functionality for local application windows control:
-         *  -   Adding / removing application windows if such has been opened / closed
-         *  -   Selecting / deselecting specific windows share on UI and on API level
-         *  -   Starting share (used in command binding)
-         */
-
-        public void AddLocalWindow(LocalWindowShareModel window)
+        bool isSharingWithAudio_;
+        public bool IsSharingWithAudio
         {
-            if (LocalWindows.FirstOrDefault(x => x.Id.Equals(window.Id)) == null)
+            get { return isSharingWithAudio_; }
+            set
             {
-                System.Windows.Application.Current.Dispatcher.Invoke(() => LocalWindows.Add(window));
-                Log.Info(string.Format("Added local window: name={0} id={1}", window.DisplayName, window.Id));
+                isSharingWithAudio_ = value;
+                Log.InfoFormat("Set sharing with audio: {0}", value);
+                OnPropertyChanged();
+
+                CommandToggleDebug.Execute(null);
             }
         }
-
-        public void RemoveLocalWindow(LocalWindowShareModel window)
-        {
-            var winToRemove = LocalWindows.FirstOrDefault(x => x.Id.Equals(window.Id));
-            if (winToRemove != null)
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(() => LocalWindows.Remove(winToRemove));
-                Log.Info(
-                    string.Format("Removed local window: name={0} id={1}", winToRemove.DisplayName, winToRemove.Id));
-            }
-        }
-
-        public void SetSelectedLocalWindow(LocalWindowShareModel window)
-        {
-            LocalWindows.Select(x =>
-                {
-                    x.IsSelected = false;
-                    return x;
-                })
-                .ToList();
-
-            var winToSelect = LocalWindows.FirstOrDefault(x => x.Id.Equals(window.Id));
-            if (winToSelect != null)
-            {
-                winToSelect.IsSelected = true;
-                Log.Info(string.Format("Local window selected: name={0} id={1}", winToSelect.DisplayName,
-                    winToSelect.Id));
-                if (EnableHighFramerateShare)
-                    winToSelect.Object.SetBoundsConstraints(LMI_NSECS_PER_SEC / 30, LMI_NSECS_PER_SEC / 30, 3840, 80, 2160, 45);
-                else
-                    winToSelect.Object.SetBoundsConstraints(LMI_NSECS_PER_SEC * 5, LMI_NSECS_PER_SEC / 3, 3840, 80, 2160, 45);
-            }
-        }
-
-        public void SetSelectedLocalWindow(object winModelObj)
-        {
-            var win = winModelObj as LocalWindowShareModel;
-            if (win != null)
-            {
-                SetSelectedLocalWindow(win);
-            }
-        }
-
-        private void StartLocalWindowShare()
-        {
-            var winToShare = LocalWindows.FirstOrDefault(x => x.IsSelected);
-            if (winToShare != null)
-            {
-                SharingInProgress = _connector.SelectLocalWindowShare(winToShare.Object);
-                Log.Info(string.Format("Set selected local window share: name={0} id={1}", winToShare.DisplayName,
-                    winToShare.Id));
-            }
-        }
-
-        #endregion
-
-        #region LocalMonitors
-
-        /*
-         * This section contains functionality for local monitors (sreens) control:
-         *  -   Adding / removing monitor if such has been plugged in / plugged out
-         *  -   Selecting / deselecting specific monitor share on UI and on API level
-         *  -   Starting share (used in command binding)
-         */
-
-        public void AddLocalMonitor(LocalMonitorModel monitor)
-        {
-            if (LocalMonistors.FirstOrDefault(x => x.Id.Equals(monitor.Id)) == null)
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(() => LocalMonistors.Add(monitor));
-                Log.Info(string.Format("Added local monitor: name={0} id={1}", monitor.DisplayName, monitor.Id));
-            }
-        }
-
-        public void RemoveLocalMonitor(LocalMonitorModel monitor)
-        {
-            var monitorToRemove = LocalMonistors.FirstOrDefault(x => x.Id.Equals(monitor.Id));
-            if (monitorToRemove != null)
-            {
-                System.Windows.Application.Current.Dispatcher.Invoke(() => LocalMonistors.Remove(monitorToRemove));
-                Log.Info(string.Format("Removed local monitor: name={0} id={1}", monitorToRemove.DisplayName,
-                    monitorToRemove.Id));
-            }
-        }
-
-        public void SetSelectedLocalMonitor(LocalMonitorModel monitor)
-        {
-            LocalMonistors.Select(x =>
-                {
-                    x.IsSelected = false;
-                    return x;
-                })
-                .ToList();
-
-            var monitorToSelect = LocalMonistors.FirstOrDefault(x => x.Id.Equals(monitor.Id));
-            if (monitorToSelect != null)
-            {
-                monitorToSelect.IsSelected = true;
-                Log.Info(string.Format("Local window selected: name={0} id={1}", monitorToSelect.DisplayName,
-                    monitorToSelect.Id));
-                if(EnableHighFramerateShare)
-                    monitorToSelect.Object.SetBoundsConstraints(LMI_NSECS_PER_SEC / 30, LMI_NSECS_PER_SEC / 30, 3840, 320, 2160, 180);
-                else
-                    monitorToSelect.Object.SetBoundsConstraints(LMI_NSECS_PER_SEC / 3, LMI_NSECS_PER_SEC / 3, 3840, 320, 2160, 180);
-            }
-        }
-
-        public void SetSelectedLocalMonitor(object monitorModelObj)
-        {
-            var monitor = monitorModelObj as LocalMonitorModel;
-            if (monitor != null)
-            {
-                SetSelectedLocalMonitor(monitor);
-            }
-        }
-
-        private void StartLocalMonitorShare()
-        {
-            var monitorToShare = LocalMonistors.FirstOrDefault(x => x.IsSelected);
-            if (monitorToShare != null)
-            {
-                SharingInProgress = _connector.SelectLocalMonitor(monitorToShare.Object);
-                Log.Info(string.Format("Set selected local window share: name={0} id={1}", monitorToShare.DisplayName,
-                    monitorToShare.Id));
-            }
-        }
-
-        #endregion
 
         #region Participant
 
@@ -815,14 +764,16 @@ namespace VidyoConnector.ViewModel
 
         public void OnModerationCommandReceived(Device.DeviceType deviceType, Room.RoomModerationType moderationType, bool state)
         {
-            if(deviceType == Device.DeviceType.DevicetypeLocalMicrophone)
+            if (confViewModel == null)
             {
-                if(moderationType == Room.RoomModerationType.RoommoderationtypeHardMute)
+                return;
+            }
+
+            if (deviceType == Device.DeviceType.DevicetypeLocalMicrophone)
+            {
+                if (moderationType == Room.RoomModerationType.RoommoderationtypeHardMute)
                 {
-                    if ((confViewModel != null) && (!confViewModel.IsAllowForModerationOperation()))
-                    {
-                        IsBtnMicrophoneEnabled = !state;
-                    }
+                    IsBtnMicrophoneEnabled = confViewModel.IsAllowForModerationOperation() || !state;
                 }
             }
 
@@ -830,17 +781,11 @@ namespace VidyoConnector.ViewModel
             {
                 if (moderationType == Room.RoomModerationType.RoommoderationtypeHardMute)
                 {
-                    if ((confViewModel != null) && (!confViewModel.IsAllowForModerationOperation()))
-                    {
-                        IsBtnCameraEnabled = !state;
-                    }
+                    IsBtnCameraEnabled = confViewModel.IsAllowForModerationOperation() || !state;
                 }
             }
 
-            if (confViewModel != null)
-            {
-                confViewModel.OnModerationCommandReceived(deviceType, moderationType, state);
-            }
+            confViewModel.OnModerationCommandReceived(deviceType, moderationType, state);
         }
 
         public void OnConferenceModeChanged(ConnectorConferenceMode mode)
@@ -1004,9 +949,11 @@ namespace VidyoConnector.ViewModel
 						StopLobbyModeTimer();
                         IsBtnCameraEnabled = true;
                         IsBtnMicrophoneEnabled = true;
+                        IsSetProductInfoEnabled = true;
                         break;
                     case ConnectionState.Connected:
                         Status = "Connected";
+                        IsSetProductInfoEnabled = false;
                         break;
                     case ConnectionState.OperationInProgress:
                         Status = "Please wait...";
@@ -1026,6 +973,20 @@ namespace VidyoConnector.ViewModel
                 OnPropertyChanged();
 
                 CommandToggleDebug.Execute(null);
+            }
+        }
+
+        private bool _enablePtz;
+        public bool EnablePtz
+        {
+            get { return _enablePtz; }
+            set
+            {
+                _enablePtz = value;
+                Log.InfoFormat("Set ptz mode={0}", value);
+                OnPropertyChanged();
+
+                CommandTogglePtz.Execute(null);
             }
         }
 
@@ -1051,17 +1012,6 @@ namespace VidyoConnector.ViewModel
                     Log.Info("Error message cleared.");
                 else 
                     Log.Warn(string.Format("Set error string={0}", value));
-                OnPropertyChanged();
-            }
-        }
-
-        private bool _sharingInProgress;
-        public bool SharingInProgress {
-            get { return _sharingInProgress; }
-            set
-            {
-                _sharingInProgress = value;
-                Log.Info(string.Format("Set sharing in progress={0}", value));
                 OnPropertyChanged();
             }
         }
@@ -1143,15 +1093,15 @@ namespace VidyoConnector.ViewModel
             }
         }
 
-        private void StopSharing()
+        private bool _isSetProductInfoEnabled;
+        public bool IsSetProductInfoEnabled
         {
-            _connector.SelectLocalWindowShare(null);
-            Log.Info("Local windows sharing stopped.");
-
-            _connector.SelectLocalMonitor(null);
-            Log.Info("Local monitors sharing stopped.");
-
-            SharingInProgress = false;
+            get { return _isSetProductInfoEnabled; }
+            set
+            {
+                _isSetProductInfoEnabled = value;
+                OnPropertyChanged();
+            }
         }
 
         private void JoinLeaveCall()
@@ -1179,16 +1129,17 @@ namespace VidyoConnector.ViewModel
             try
             {
                 Boolean res = false;
-                if (!String.IsNullOrEmpty(RoomKey) && !String.IsNullOrEmpty(Portal)) {
-                    if (!String.IsNullOrEmpty(UserName) && 
-                        !String.IsNullOrEmpty(Password))
+                if (IsInputValid())
+                {
+                    if (_userLoginType == UserLoginType.AsUser)
                     {
                         res = _connector.ConnectToRoomWithKey(Portal
                             , UserName, Password, RoomKey, RoomPin, new ConnectionListener(this));
                     }
-                    else if (!String.IsNullOrEmpty(DisplayName)){
+                    else if (_userLoginType == UserLoginType.AsGuest)
+                    {
                         res = _connector.ConnectToRoomAsGuest(Portal, DisplayName, RoomKey, RoomPin, new ConnectionListener(this));
-                    } 
+                    }
                 }
                 Log.DebugFormat("Returned '{0}'", res);
             }
@@ -1220,20 +1171,9 @@ namespace VidyoConnector.ViewModel
 
                 confViewModel.DeInitialize();
                 confViewModel = null;
-
-                // Unregistering to events we want to handle.
-                _connector.UnregisterConferenceModeEventListener();
-                _connector.UnregisterConnectionPropertiesEventListener();
-                _connector.UnregisterLocalCameraEventListener();
-                _connector.UnregisterLocalWindowShareEventListener();
-                _connector.UnregisterLocalMicrophoneEventListener();
-                _connector.UnregisterLocalSpeakerEventListener();
-                _connector.UnregisterParticipantEventListener();
-                _connector.UnregisterLocalMonitorEventListener();
-                _connector.UnregisterLectureModeEventListener();
-                _connector.UnregisterModerationCommandEventListener();
-
-                _connector.HideView(_handle);
+               
+                conferenceShareViewModel?.Uninit();
+                VidyoConnectorUninit();
                 System.Windows.Application.Current.Shutdown();
             }
         }
@@ -1252,12 +1192,15 @@ namespace VidyoConnector.ViewModel
         private void ShowAbout()
         {
             MessageBox.Show(
-                "VidyoClient-WinSDK Version " + _connector.GetVersion() + "\r\n\r\nCopyright © 2017-2018 Vidyo, Inc. All rights reserved.",
+                "VidyoClient-WinSDK Version " + GetApplicationVersion() + "\r\n\r\nCopyright © 2017-2022 Vidyo, Inc. All rights reserved.",
                 "About VidyoConnector", MessageBoxButton.OK, MessageBoxImage.Information);
         }
 
         private void ToggleDebug()
         {
+            if (_connector == null) {
+                return;
+            }
             if (EnableDebug)
             {
                 _connector.EnableDebug(7776, "info@VidyoClient info@VidyoConnector warning");
@@ -1267,6 +1210,14 @@ namespace VidyoConnector.ViewModel
             {
                 _connector.DisableDebug();
                 Log.Info("Debug mode enabled");
+            }
+        }
+  
+        private void TogglePtz()
+        {
+            if (_connector != null)
+            {
+                _connector.SetAdvancedOptions( "{\"PTZ\":" + (EnablePtz ? "true}" : "false}"));
             }
         }
 
@@ -1288,22 +1239,35 @@ namespace VidyoConnector.ViewModel
             {
                 for (int i = 0; i < args.Length; i++)
                 {
-                    var split = args[i].Split("=".ToCharArray(), 2);
-
-                    if (split[0].Contains("portal")) Portal = split[1];
-                    else if (split[0].Contains("displayName")) DisplayName = split[1];
-                    else if (split[0].Contains("roomKey")) RoomKey = split[1];
-                    else if (split[0].Contains("roomPin")) RoomPin = split[1];
-                    else if (split[0].Contains("hideConfig")) Log.Warn("hideConfig property is not implemented yet.");
-                    else if (split[0].Contains("autoJoin")) Log.Warn("autoJoin property is not implemented yet.");
-                    else if (split[0].Contains("allowReconnect")) Log.Warn("allowReconnect property is not implemented yet.");
-                    else if (split[0].Contains("enableDebug"))
+                    if (args[i].StartsWith("vidyoconnector://"))
                     {
-                        if (split[1].Equals("0")) EnableDebug = false;
-                        else if (split[1].Equals("1")) EnableDebug = true;
+                        var split = args[i].Split("?".ToCharArray(), 2);
+                        if (split.Length < 2) continue;
+                        var parsingString = split[1].Split("&".ToCharArray(), 10);
+                        for (int j = 0; j < parsingString.Length; j++)
+                        {
+                            var keyV = parsingString[j].Split("=".ToCharArray(), 2);
+                            if (keyV.Length < 2) continue;
+                            var key = keyV[0];
+                            var v = keyV[1];
+                            if (key.Equals("portal")) Portal = v;
+                            else if (key.Equals("displayName")) DisplayName = v;
+                            else if (key.Equals("roomKey")) RoomKey = v;
+                            else if (key.Equals("roomPin")) RoomPin = v;
+                            else if (key.Equals("hideConfig")) Log.Warn("hideConfig property is not implemented yet.");
+                            else if (key.Equals("autoJoin")) Log.Warn("autoJoin property is not implemented yet.");
+                            else if (key.Equals("allowReconnect")) Log.Warn("allowReconnect property is not implemented yet.");
+                            else if (key.Equals("enableDebug"))
+                            {
+                                if (v.Equals("0")) EnableDebug = false;
+                                else if (v.Equals("1")) EnableDebug = true;
+                            }
+                            else if (key.Equals("returnURL")) Log.Warn("returnURL property is not implemented yet.");
+                            else Log.ErrorFormat("Argument {0} is not valid.", keyV);
+                        }
+                        break;
+
                     }
-                    else if (split[0].Contains("returnURL")) Log.Warn("returnURL property is not implemented yet.");
-                    else Log.ErrorFormat("Argument {0} is not valid.", split[0]);
                 }
             }
             catch (Exception ex)
@@ -1360,9 +1324,21 @@ namespace VidyoConnector.ViewModel
             get { return GetCommand(ref _commandShareAudioContent, x => ShareAudioContent()); }
         }
 
+        private ICommand _commandShareVirtualAudioContent;
+        public ICommand CommandShareVirtualAudioContent
+        {
+            get { return GetCommand(ref _commandShareVirtualAudioContent, x => ShareVirtualAudioContent()); }
+        }        
+
         private ICommand _commandSelectLocalSpeaker;
         public ICommand CommandSelectLocalSpeaker {
             get { return GetCommand(ref _commandSelectLocalSpeaker, x => SelectLocalSpeaker()); }
+        }
+
+        private ICommand _commandSelectVirtualMicrophone;
+        public ICommand CommandSelectVirtualMicrophone
+        {
+            get { return GetCommand(ref _commandSelectVirtualMicrophone, x => SelectVirtualMicrophone()); }
         }
 
         private ICommand _commandSetLocalCameraPrivacy;
@@ -1381,21 +1357,6 @@ namespace VidyoConnector.ViewModel
             get { return GetCommand(ref _commandSetLocalSpeakerPrivacyCommand, x => SetLocalSpeakerPrivacy()); }
         }
 
-        private ICommand _commandStartShareWindow;
-        public ICommand CommandStartShareWindow {
-            get { return GetCommand(ref _commandStartShareWindow, x => StartLocalWindowShare()); }
-        }
-
-        private ICommand _commandStartShareMonitor;
-        public ICommand CommandStartShareMonitor {
-            get { return GetCommand(ref _commandStartShareMonitor, x => StartLocalMonitorShare()); }
-        }
-
-        private ICommand _commandStopSharing;
-        public ICommand CommandStopSharing {
-            get { return GetCommand(ref _commandStopSharing, x => StopSharing()); }
-        }
-
         private ICommand _commandQuitApp;
         public ICommand CommandQuitApplication { get { return GetCommand(ref _commandQuitApp, x => QuitApplication()); } }
 
@@ -1406,6 +1367,9 @@ namespace VidyoConnector.ViewModel
 
         private ICommand _commandToggleDebug;
         public ICommand CommandToggleDebug { get { return GetCommand(ref _commandToggleDebug, x => ToggleDebug()); } }
+
+        private ICommand _commandTogglePtz;
+        public ICommand CommandTogglePtz { get { return GetCommand(ref _commandTogglePtz, x => TogglePtz()); } }
 
         private ICommand _commandSendChatMessage;
         public ICommand CommandSendChatMessage { get { return GetCommand(ref _commandSendChatMessage, x => SendChatMessage()); } }
@@ -1435,5 +1399,182 @@ namespace VidyoConnector.ViewModel
 
         #endregion
 
+        public bool SetOptions(string options)
+        {
+            return _connector.SetOptions(options);
+        }
+
+        public string GetOptions()
+        {
+            return _connector.GetOptions();
+        }
+
+        public bool SetRendererOptions(string options)
+        {
+            return _connector.SetRendererOptionsForViewId(_handle, options);
+        }
+
+        public string GetRendererOptions()
+        {
+            return _connector.GetRendererOptionsForViewId(_handle);
+        }
+
+        public bool SetProductInfo(List<ConnectorProductInformation> infoList)
+        {
+            return _connector.SetProductInfo(infoList);
+        }
+
+        public string GetApplicationVersion()
+        {
+            return _connector.GetVersion();
+        }
+
+        private UserLoginType _userLoginType;
+        public void SetLoginType(UserLoginType userOption)
+        {
+            _userLoginType = userOption;
+        }
+        public void ResetErrorMessage()
+        {
+            Error = "";
+        }
+        private Boolean IsInputValid()
+        {
+            try
+            {
+                if (String.IsNullOrEmpty(Portal))
+                    throw new ArgumentException("Missing Portal Address");
+
+                if (String.IsNullOrEmpty(RoomKey))
+                    throw new ArgumentException("Missing Room Key");
+
+                if (_userLoginType == UserLoginType.AsGuest && String.IsNullOrEmpty(DisplayName))
+                    throw new ArgumentException("Missing DisplayName");
+
+                if (_userLoginType == UserLoginType.AsUser && String.IsNullOrEmpty(UserName))
+                    throw new ArgumentException("Missing UserName");
+
+                if (_userLoginType == UserLoginType.AsUser && String.IsNullOrEmpty(Password))
+                    throw new ArgumentException("Missing Password");
+            }
+            catch (ArgumentException exp)
+            {
+                Error = exp.Message;
+                ConnectionState = ConnectionState.NotConnected;
+                return false;
+            }
+            return true;
+        }
+        
+        public bool VidyoConnectoRegisterCallbacks()
+        {
+            try {
+                if (!_connector.RegisterLocalCameraEventListener(new LocalCameraListener(this))) throw new Exception("LocalCameraEventListener");
+                if (!_connector.RegisterLocalMicrophoneEventListener(new LocalMicrophoneListener(this))) throw new Exception("LocalMicrophoneEventListener");
+                if (!_connector.RegisterLocalSpeakerEventListener(new LocalSpeakerListener(this))) throw new Exception("LocalSpeakerEventListener");
+                if (!_connector.RegisterVirtualAudioSourceEventListener(new VirtualAudioSourceListener(this))) throw new Exception("VirtualAudioSourceEventListener");
+                if (!_connector.RegisterConnectionPropertiesEventListener(new ConnectionPropertiesListener(this))) throw new Exception("ConnectionPropertiesEventListener");
+                if (!_connector.RegisterConferenceModeEventListener(new ConferenceModeListener(this))) throw new Exception("ConferenceModeEventListener");
+                if (!_connector.RegisterLectureModeEventListener(new LectureModeListener(this))) throw new Exception("LectureModeEventListener");
+                if (!_connector.RegisterParticipantEventListener(new ParticipantListener(this))) throw new Exception("ParticipantEventListener");
+                if (!_connector.RegisterModerationCommandEventListener(new ModerationCommandListener(this))) throw new Exception("ModerationCommandEventListener");
+                if (!_connector.RegisterMessageEventListener(new MessageListener(this))) throw new Exception("MessageEventListener");
+
+                Log.Info("Registered VidyoConnector callbacks.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format("Failed to register {0}", ex.Message), "Vidyo Connector");
+                return false;
+            }
+        }
+        
+        public bool VidyoConnectoUnregisterCallbacks()
+        {
+            try
+            {
+                if (!_connector.UnregisterLocalCameraEventListener()) throw new Exception("LocalCameraEventListener");
+                if (!_connector.UnregisterLocalMicrophoneEventListener()) throw new Exception("LocalMicrophoneEventListener");
+                if (!_connector.UnregisterLocalSpeakerEventListener()) throw new Exception("LocalSpeakerEventListener");
+                if (!_connector.UnregisterVirtualAudioSourceEventListener()) throw new Exception("VirtualAudioSourceEventListener");
+                if (!_connector.UnregisterConnectionPropertiesEventListener()) throw new Exception("ConnectionPropertiesEventListener");
+                if (!_connector.UnregisterConferenceModeEventListener()) throw new Exception("ConferenceModeEventListener");
+                if (!_connector.UnregisterLectureModeEventListener()) throw new Exception("LectureModeEventListener");
+                if (!_connector.UnregisterParticipantEventListener()) throw new Exception("ParticipantEventListener");
+                if (!_connector.UnregisterModerationCommandEventListener()) throw new Exception("ModerationCommandEventListener");
+                if (!_connector.UnregisterMessageEventListener()) throw new Exception("MessageEventListener");
+
+                Log.Info("Unregistered VidyoConnector callbacks.");
+                return true;
+            }
+            catch (Exception ex)
+            {
+                MessageBox.Show(string.Format("Failed to unregister {0}", ex.Message), "Vidyo Connector");
+                return false;
+            }
+        }
+
+        public bool VidyoConnectorInit()
+        {
+            if (_connector != null)
+            {
+                Log.Info("Connector already constructed");
+                return true;
+            }
+            if (!ConnectorPKG.Initialize()) {
+                MessageBox.Show("Failed to initialize connector pkg. Init failed.", "Vidyo Connector");
+                return false;
+            }
+            Log.Info("VidyoConnector initialized.");
+
+            string googleId = System.Configuration.ConfigurationManager.AppSettings["GoogleAnalyticId"];
+            if (!string.IsNullOrEmpty(googleId) && !ConnectorPKG.SetExperimentalOptions(("{\"googleAnalyticsDefaultId\":\"" + googleId + "\"}")))
+            {
+                MessageBox.Show("Failed to set the default QA google analytic service before connector is constructed", "Vidyo Connector");
+            }
+
+            _connector = new Connector(_handle, Connector.ConnectorViewStyle.ConnectorviewstyleDefault, 8, String.Empty, String.Empty, 0);
+            if (_connector == null) {
+                MessageBox.Show("Failed to construct connector. Init failed.", "Vidyo Connector");
+                return false;
+            }
+            Log.Info("VidyoConnector constructed.");
+
+            _connector.ShowViewAtPoints(_handle, 0, 0, _width, _height);
+            Log.Info(string.Format("Showing view with width={0} and height={1}", _width, _height));
+            _connector.ReportLocalParticipantOnJoined(true);
+#if DEBUG
+            _connector.SetLogLevel(ConnectorLoggerType.ConnectorloggertypeFILE, ConnectorLogLevel.ConnectorloglevelDEBUG);
+#else
+            _connector.SetLogLevel(ConnectorLoggerType.ConnectorloggertypeFILE, ConnectorLogLevel.ConnectorloglevelPRODUCTION);
+#endif
+            conferenceShareViewModel?.Init();
+            return VidyoConnectoRegisterCallbacks();
+        }
+
+        public bool VidyoConnectorUninit()
+        {
+            if (_connector == null)
+            {
+                Log.Info("Connector already destructed");
+                return true;
+            }
+            _connector.SelectAudioContentShare(null);
+            _connector.SelectLocalCamera(null);
+            _connector.SelectLocalMicrophone(null);
+            _connector.SelectLocalMonitor(null);
+            _connector.SelectLocalSpeaker(null);
+            _connector.SelectLocalWindowShare(null);
+
+            VidyoConnectoUnregisterCallbacks();
+
+            _connector.HideView(_handle);
+            _connector.Disable();
+            _connector.Dispose();
+            _connector = null;
+            ConnectorPKG.Uninitialize();
+            return true;
+        }
     }
 }

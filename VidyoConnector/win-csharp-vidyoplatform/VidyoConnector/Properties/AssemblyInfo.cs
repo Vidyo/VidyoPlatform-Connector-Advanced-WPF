@@ -10,7 +10,7 @@ using System.Windows;
 [assembly: AssemblyConfiguration("")]
 [assembly: AssemblyCompany("Vidyo")]
 [assembly: AssemblyProduct("VidyoConnector")]
-[assembly: AssemblyCopyright("Copyright © Vidyo, Inc. 2017")]
+[assembly: AssemblyCopyright("Copyright © Vidyo, Inc. 2022")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 // Let log4net know that it can look for configuration in the default application config file

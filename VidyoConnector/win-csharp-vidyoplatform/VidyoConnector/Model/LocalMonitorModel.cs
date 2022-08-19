@@ -7,19 +7,13 @@ namespace VidyoConnector.Model
         public LocalMonitorModel(LocalMonitor monitor)
         {
             Object = monitor;
+            if (monitor != null) {
+                _displayName = monitor.GetName();
+                _id = monitor.GetId();
+            }
         }
 
         public LocalMonitor Object { get; private set; }
-
-        public string DisplayName
-        {
-            get { return Object == null ? null : Object.GetName(); }
-        }
-
-        public string Id
-        {
-            get { return Object == null ? null : Object.GetId(); }
-        }
 
         private bool _isSelected;
         /// <summary>

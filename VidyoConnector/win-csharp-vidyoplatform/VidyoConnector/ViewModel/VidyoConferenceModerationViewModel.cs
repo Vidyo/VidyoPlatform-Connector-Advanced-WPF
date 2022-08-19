@@ -19,16 +19,25 @@ using VidyoConnector;
 using System.Data;
 using SearchUsersDialog;
 using static VidyoClient.Participant;
+using VidyoConnector.Model;
 
 namespace VidyoConferenceModeration.ViewModel
 {
     public enum ParticipantCommandType
     {
+        SendPrivateMsgCommand,
         HandCommand,
         MicCommand,
         CameraCommand,
+        CameraPresetCommand,
+        CameraViscaCommand,
         DisconnectCommand,
         UnknownCommand
+    }
+    public enum UserLoginType
+    {
+        AsUser,
+        AsGuest
     }
 
     public class RecordingItemElemt
@@ -50,7 +59,11 @@ namespace VidyoConferenceModeration.ViewModel
         public bool ParticipantHardMuteUnmuteMicStatus { get; set; }
         public bool ParticipantHardMuteUnmuteCameraStatus { get; set; }
         public bool ParticipantConnectStatus { get; set; }
-
+        public RemoteCameraModel Camera { get; set; }
+        public bool ParticipantCameraPresetStatus { get; set; }
+        public string ParticipantCameraPresetAvailable { get; set; }
+        public bool ParticipantCameraViscaStatus { get; set; }
+        public string ParticipantCameraViscaSupported { get; set; }
         public ParticipantItemElemt(string participantName, string participantUserId, string participantType,
             bool participantMicStatus, bool participantCameraStatus,
             bool participantIsPresenter, bool participantHandStatus, bool participantHardMuteUnmuteMicStatus,
@@ -68,6 +81,11 @@ namespace VidyoConferenceModeration.ViewModel
             this.ParticipantHardMuteUnmuteMicStatus = participantHardMuteUnmuteMicStatus;
             this.ParticipantHardMuteUnmuteCameraStatus = participantHardMuteUnmuteCameraStatus;
             this.ParticipantConnectStatus = participantConnectStatus;
+            this.Camera = null;
+            this.ParticipantCameraPresetStatus = false;
+            this.ParticipantCameraPresetAvailable = String.Empty;
+            this.ParticipantCameraViscaStatus = false;
+            this.ParticipantCameraViscaSupported = String.Empty;
         }
 
         public void ParticipantItemElemt_SetMicStatus(bool micStatus)
@@ -106,6 +124,37 @@ namespace VidyoConferenceModeration.ViewModel
             NotifyPropertyChanged("ParticipantHardMuteUnmuteCameraStatus");
         }
 
+        public void ParticipantItemElemt_SetCamera(RemoteCameraModel camera)
+        {
+            this.Camera = camera;
+            NotifyPropertyChanged("Camera");
+        }
+
+        public RemoteCameraModel ParticipantItemElemt_GetCamera()
+        {
+            return this.Camera;
+        }
+
+        public void ParticipantItemElemt_SetCameraPresetStatus(bool status)
+        {
+            this.ParticipantCameraPresetStatus = status;
+            NotifyPropertyChanged("ParticipantCameraPresetStatus");
+        }
+
+        public void ParticipantItemElemt_SetCameraPresetAvailable(string str)
+        {
+            this.ParticipantCameraPresetAvailable = str;
+            NotifyPropertyChanged("ParticipantCameraPresetAvailable");
+        }
+
+        public void ParticipantItemElemt_SetCameraViscaSupport(string str)
+        {
+            ParticipantCameraViscaStatus = !string.IsNullOrEmpty(str);
+            this.ParticipantCameraViscaSupported = str;
+            NotifyPropertyChanged("ParticipantCameraViscaSupported");
+            NotifyPropertyChanged("ParticipantCameraViscaStatus");
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected virtual void NotifyPropertyChanged(string propertyName = "")
@@ -116,6 +165,7 @@ namespace VidyoConferenceModeration.ViewModel
 
     public class VidyoConferenceModerationViewModel : VidyoConnectorViewModel, INotifyPropertyChanged
     {
+        private object DataContext;
         int indexRecordingProfile;
         List<Tuple<int, String, String>> recordingProfileList;
         List <KeyValuePair<String, Participant>> participantList;
@@ -130,8 +180,9 @@ namespace VidyoConferenceModeration.ViewModel
         Participant localParticipantInfo;
         ConferenceModerationWindow confModerationWindow;
 
-        public VidyoConferenceModerationViewModel()
+        public VidyoConferenceModerationViewModel(object DataContext = null)
         {
+            this.DataContext = DataContext;
             _itemsLock = new object();
 
             RecordingProfileItemList = new ObservableCollection<RecordingItemElemt>();
@@ -141,8 +192,6 @@ namespace VidyoConferenceModeration.ViewModel
 
             BindingOperations.EnableCollectionSynchronization(ParticipantItemList, _itemsLock);
 
-            GetConnectorInstance.RegisterRemoteCameraEventListener(new RemoteCameraListener(this));
-            GetConnectorInstance.RegisterRemoteMicrophoneEventListener(new RemoteMicrophoneListener(this));
 
             ParticipantCount = "Participants(0)";
             IsRoleNone = true;
@@ -156,6 +205,8 @@ namespace VidyoConferenceModeration.ViewModel
 
         public void Init(ConferenceModerationWindow conf)
         {
+            GetConnectorInstance.RegisterRemoteCameraEventListener(new RemoteCameraListener(this));
+            GetConnectorInstance.RegisterRemoteMicrophoneEventListener(new RemoteMicrophoneListener(this));
             confModerationWindow = conf;
             RecordingProfileItemList.Clear();
             recordingProfileList.Clear();
@@ -290,6 +341,8 @@ namespace VidyoConferenceModeration.ViewModel
                     (localUserClearanceType == ParticipantClearanceType.ParticipantCLEARANCETYPE_Owner))
             {
                 isEnabled = true;
+                ((VidyoConnectorViewModel)DataContext).IsBtnMicrophoneEnabled = isEnabled;
+                ((VidyoConnectorViewModel)DataContext).IsBtnCameraEnabled = isEnabled;
             }
             else
             {
@@ -602,7 +655,8 @@ namespace VidyoConferenceModeration.ViewModel
         {
             bool retValue = false;
 
-            if (!IsAllowForModerationOperation())
+            if (!IsAllowForModerationOperation() && 
+                !(participantCommand == ParticipantCommandType.CameraPresetCommand || participantCommand == ParticipantCommandType.CameraViscaCommand))
             {
                 String msgHeader;
                 switch(participantCommand)
@@ -634,7 +688,25 @@ namespace VidyoConferenceModeration.ViewModel
                 String message;
                 if (item != null)
                 {
-                    if (participantCommand == ParticipantCommandType.HandCommand)
+                    if (participantCommand == ParticipantCommandType.SendPrivateMsgCommand)
+                    {
+                        if (participant.IsLocal())
+                        {
+                            return true;
+                        }
+
+                        var sendPrivateMsgDialog = new SendPrivateMsgDialog(participant.GetName());
+                        if (sendPrivateMsgDialog.ShowDialog() == true)
+                        {
+                            retValue = GetConnectorInstance.SendPrivateChatMessage(participant, sendPrivateMsgDialog.GetPrivateMsg());
+                            if (!retValue)
+                            {
+                                message = "Failed to Send Private Message to Participant : " + participant.GetName();
+                                DisplayErrorMessageForAPI("Moderation", message);
+                            }
+                        }
+                    }
+                    else if (participantCommand == ParticipantCommandType.HandCommand)
                     {
                         if (item.ParticipantHandStatus)
                         {
@@ -713,6 +785,24 @@ namespace VidyoConferenceModeration.ViewModel
                             message = "Failed to Drop Participant for Participant : " + participant.GetName();
                             DisplayErrorMessageForAPI("Moderation", message);
                         }
+                    }
+                    else if (participantCommand == ParticipantCommandType.CameraPresetCommand)
+                    {
+                        if (participant.IsLocal() || !item.ParticipantCameraPresetStatus)
+                        {
+                            return true;
+                        }
+                        VidyoCameraPreset presetDialog = new VidyoCameraPreset(item.ParticipantItemElemt_GetCamera());
+                        presetDialog.ShowDialog();
+                    }
+                    else if (participantCommand == ParticipantCommandType.CameraViscaCommand)
+                    {
+                        if (participant.IsLocal() || !item.ParticipantCameraViscaStatus)
+                        {
+                            return true;
+                        }
+                        VidyoCameraViscaCommand viscaCommand = new VidyoCameraViscaCommand(item.ParticipantItemElemt_GetCamera());
+                        viscaCommand.ShowDialog();
                     }
                 }
             }
@@ -817,6 +907,10 @@ namespace VidyoConferenceModeration.ViewModel
             {
                 participantList.Remove(new KeyValuePair<String, Participant>(participantUserId, participant));
                 ParticipantItemList.Remove(ParticipantItemList.Where(i => i.ParticipantUserId == participantUserId).Single());
+                if (participant.IsLocal())
+                {
+                    localParticipantInfo = null;
+                }
                 ParticipantCount = "Participants(" + participantList.Count().ToString() + ")";
             }
         }
@@ -1447,11 +1541,11 @@ namespace VidyoConferenceModeration.ViewModel
         {
             if (result != ConnectorModerationResult.ConnectormoderationresultOK)
             {
-                IsRecordingPaused = true;
+                IsRecordingPaused = false;
             }
             else
             {
-                IsRecordingPaused = false;
+                IsRecordingPaused = true;
             }
             DisplayMessageForCallBackResult("Recording Service Pause", result);
         }
@@ -1460,11 +1554,11 @@ namespace VidyoConferenceModeration.ViewModel
         {
             if (result != ConnectorModerationResult.ConnectormoderationresultOK)
             {
-                IsRecordingPaused = false;
+                IsRecordingPaused = true;
             }
             else
             {
-                IsRecordingPaused = true;
+                IsRecordingPaused = false;
             }
 
             DisplayMessageForCallBackResult("Recording Service Resume", result);
@@ -1478,6 +1572,7 @@ namespace VidyoConferenceModeration.ViewModel
                 if (item != null)
                 {
                     item.ParticipantItemElemt_SetCameraStatus(false);
+                    item.ParticipantItemElemt_SetCamera(new RemoteCameraModel(remoteCamera));
                 }
             }
         }
@@ -1490,6 +1585,10 @@ namespace VidyoConferenceModeration.ViewModel
                 if (item != null)
                 {
                     item.ParticipantItemElemt_SetCameraStatus(true);
+                    item.ParticipantItemElemt_SetCamera(null);
+                    item.ParticipantItemElemt_SetCameraPresetStatus(false);
+                    item.ParticipantItemElemt_SetCameraPresetAvailable(string.Empty);
+                    item.ParticipantItemElemt_SetCameraViscaSupport(string.Empty);
                 }
             }
         }
@@ -1505,9 +1604,37 @@ namespace VidyoConferenceModeration.ViewModel
                     {
                         item.ParticipantItemElemt_SetCameraStatus(true);
                     }
-                    if (state == Device.DeviceState.DevicestateResumed)
+                    else if (state == Device.DeviceState.DevicestateResumed)
                     {
                         item.ParticipantItemElemt_SetCameraStatus(false);
+                    }
+                    else if (state == Device.DeviceState.DevicestateNotControllable)
+                    {
+                        item.ParticipantItemElemt_SetCameraPresetStatus(false);
+                        item.ParticipantItemElemt_SetCameraPresetAvailable(string.Empty);
+                    }
+                    else if (state == Device.DeviceState.DevicestateControllable)
+                    {
+                        List<CameraPreset> presets = item.ParticipantItemElemt_GetCamera().GetPresetData();
+                        if (presets!= null && presets.Count != 0)
+                        {
+                            item.ParticipantItemElemt_SetCameraPresetStatus(true);
+                            item.ParticipantItemElemt_SetCameraPresetAvailable("Available");
+                        }
+                        else
+                        {
+                            item.ParticipantItemElemt_SetCameraPresetStatus(false);
+                            item.ParticipantItemElemt_SetCameraPresetAvailable(String.Empty);
+                        }
+                        CameraControlCapabilities cap = remoteCamera.GetControlCapabilities();
+                        if(cap.hasViscaSupport)
+                        {
+                            item.ParticipantItemElemt_SetCameraViscaSupport("Available");
+                        }
+                        else
+                        {
+                            item.ParticipantItemElemt_SetCameraViscaSupport(String.Empty);
+                        }
                     }
                 }
             }
@@ -1561,7 +1688,7 @@ namespace VidyoConferenceModeration.ViewModel
             lock (_itemsLock)
             {
                 var item = ParticipantItemList.FirstOrDefault(i => i.ParticipantUserId == GetLocalParticipantUserId());
-                if (state == Device.DeviceState.DevicestateStopped)
+                if ((state == Device.DeviceState.DevicestateStopped) || (state == Device.DeviceState.DevicestatePaused))
                 {
                     if (item != null)
                     {
@@ -1569,7 +1696,7 @@ namespace VidyoConferenceModeration.ViewModel
                     }
                     localUserMicStatus = true;
                 }
-                if (state == Device.DeviceState.DevicestateStarted)
+                if ((state == Device.DeviceState.DevicestateStarted) || (state == Device.DeviceState.DevicestateResumed))
                 {
                     if (item != null)
                     {

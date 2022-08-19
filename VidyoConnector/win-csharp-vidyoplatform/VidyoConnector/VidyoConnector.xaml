@@ -1,4 +1,4 @@
-﻿<Window x:Class="VidyoConnector.MainWindow"
+<Window x:Class="VidyoConnector.MainWindow"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
@@ -77,9 +77,14 @@
                         </MenuItem.Style>
                     </MenuItem>
                     <MenuItem Header="Debug Mode" IsCheckable="True" IsChecked="{Binding EnableDebug, Mode=TwoWay}" />
-					<MenuItem Header="High Framerate Share" IsCheckable="True" IsChecked="{Binding EnableHighFramerateShare, Mode=TwoWay}" />
-                    <MenuItem Header="Moderation" Click="MenuItem_ConferenceModerationClick" ToolTip="Open Conference Moderation Page"/>
-				</MenuItem>
+                    <MenuItem Header="PTZ" IsCheckable="True" IsChecked="{Binding EnablePtz, Mode=TwoWay}" />
+                    <MenuItem Header="Moderation/FECC" Click="MenuItem_ConferenceModerationClick" ToolTip="Open Conference Moderation Page"/>
+                    <MenuItem Header="Options" Click="MenuItem_ConferenceOptionClick" ToolTip="Open conference option page"/>
+                    <MenuItem Header="Renderer Options" Click="MenuItem_ConferenceRendererOptionClick" ToolTip="Open conference renderer option page"/>
+                    <MenuItem Header="Backgroud Select" Click="MenuItem_BackgroundSelect" ToolTip="Open background select page"/>
+                    <MenuItem Header="VirtualDevices" Click="MenuItem_VirtualDevices" ToolTip="Open virtual devices page"/>
+                    <MenuItem Header="Set Product Info" Click="MenuItem_SetProductInfo" ToolTip="Set Product Info" IsEnabled="{Binding IsSetProductInfoEnabled, Mode=OneWay}"/>
+                </MenuItem>
                 <MenuItem Header="Devices">
                     <MenuItem Name="MenuItemCameras" Header="Cameras" ItemsSource="{Binding LocalCameras}" >
                         <MenuItem.ItemTemplate>
@@ -108,6 +113,15 @@
                             </DataTemplate>
                         </MenuItem.ItemTemplate>
                     </MenuItem>
+                    <MenuItem Header="VirtualMicrophones" ItemsSource="{Binding VirtualAudioSources}">
+                        <MenuItem.ItemTemplate>
+                            <DataTemplate>
+                                <MenuItem Header="{Binding DisplayName}" IsCheckable="True" IsChecked="{Binding IsStreamingAudio}" IsEnabled="{Binding CanStreamAudio}"
+                                          Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.CommandSelectVirtualMicrophone}"
+                                          Click="MenuItem_VirtualMicrophone_Click"/>
+                            </DataTemplate>
+                        </MenuItem.ItemTemplate>
+                    </MenuItem>
                 </MenuItem>
                 <MenuItem Header="Content">
                     <MenuItem Name="VideoContent" Header="Video Content Share" ItemsSource="{Binding LocalCameras}">
@@ -128,27 +142,18 @@
                             </DataTemplate>
                         </MenuItem.ItemTemplate>
                     </MenuItem>
-                </MenuItem>
-                <MenuItem Header="Shares" >
-                    <MenuItem Header="Monitors" ItemsSource="{Binding LocalMonistors}">
+                    <MenuItem Name="VirtualAudioContent" Header="Virtual Audio Content Share" ItemsSource="{Binding VirtualAudioSources}">
                         <MenuItem.ItemTemplate>
                             <DataTemplate>
-                                <MenuItem Header="{Binding DisplayName}" IsCheckable="True" IsChecked="{Binding IsSelected}"
-                                          Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.CommandStartShareMonitor}"
-                                          Click="MenuItemSharesMonitors_OnClick"/>
-                            </DataTemplate>
-                        </MenuItem.ItemTemplate>
-                    </MenuItem>
-                    <MenuItem Header="Windows" ItemsSource="{Binding LocalWindows}">
-                        <MenuItem.ItemTemplate>
-                            <DataTemplate>
-                                <MenuItem Header="{Binding DisplayName}" IsCheckable="True" IsChecked="{Binding IsSelected}"
-                                          Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.CommandStartShareWindow}"
-                                          Click="MenuItemSharesWindows_OnClick"/>
+                                <MenuItem Header="{Binding DisplayName}" IsCheckable="True" IsChecked="{Binding IsSharingContent}" IsEnabled="{Binding CanShareContent}"
+                                          Command="{Binding RelativeSource={RelativeSource FindAncestor, AncestorType={x:Type Window}}, Path=DataContext.CommandShareVirtualAudioContent}"
+                                          Click="MenuItemVirtualAudioContent_OnClick"/>
                             </DataTemplate>
                         </MenuItem.ItemTemplate>
                     </MenuItem>
                 </MenuItem>
+                <MenuItem Header="Shares" ToolTip="Open share page" Click="MenuItem_ShareDevices"/>
+                <MenuItem Header="Analytics" Click="MenuItem_AnalyticsClick" ToolTip="Open Analytics Page"/>
             </Menu>
             <StackPanel></StackPanel>
         </DockPanel>
@@ -299,26 +304,6 @@
                 <TextBlock Grid.Column="0" Text="{Binding ParticipantsActivityLog}" Foreground="White" DockPanel.Dock="Left" VerticalAlignment="Center" Margin="20,0,0,0"/>
 
                 <StackPanel Grid.Column="1" Orientation="Horizontal" DockPanel.Dock="Bottom" HorizontalAlignment="Center" VerticalAlignment="Center" Background="Transparent" >
-                    <Button Name="StopSharing" Margin="0,15,60,15" Command="{Binding CommandStopSharing}" ToolTip="Stop sharing">
-                        <Button.Style>
-                            <Style TargetType="{x:Type Button}">
-                                <Style.Triggers>
-                                    <DataTrigger Binding="{Binding SharingInProgress, Mode=TwoWay}" Value="True">
-                                        <Setter Property="Visibility" Value="Visible" />
-                                    </DataTrigger>
-                                    <DataTrigger Binding="{Binding SharingInProgress, Mode=TwoWay}" Value="False">
-                                        <Setter Property="Visibility" Value="Collapsed" />
-                                    </DataTrigger>
-                                </Style.Triggers>
-                            </Style>
-                        </Button.Style>
-                        <Button.Template>
-                            <ControlTemplate>
-                                <Image Source="Images/stopsharingTransparent.png" />
-                            </ControlTemplate>
-                        </Button.Template>
-                    </Button>
-                    
                     <Button Name="BtnConference" Margin="20,15,10,15" Command="{Binding CommandJoinLeaveCall}" ToolTip="Join / Leave call">
                         <Button.Template>
                             <ControlTemplate>

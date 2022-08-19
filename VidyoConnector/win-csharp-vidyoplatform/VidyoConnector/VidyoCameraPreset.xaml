@@ -1,0 +1,64 @@
+﻿<Window x:Class="VidyoConnector.VidyoCameraPreset"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:VidyoConnector"
+        mc:Ignorable="d"
+        Title="Camera Presets" ResizeMode="NoResize" Height="350" Width="350">
+    
+    <Grid x:Name="CameraPreset" Background="#4CDEDEDE">
+
+        <Grid.ColumnDefinitions>
+            <ColumnDefinition Width="5*"/>
+            <ColumnDefinition Width="90*"/>
+            <ColumnDefinition Width="5*"/>
+        </Grid.ColumnDefinitions>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="5"/>
+            <RowDefinition Height="70*"/>
+            <RowDefinition Height="5*"/>
+            <RowDefinition Height="10*"/>
+            <RowDefinition Height="5*"/>
+        </Grid.RowDefinitions>
+
+        <Grid x:Name="CameraPresetLabel"  Grid.Row="1" Grid.Column="1">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="20*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="70*"/>
+                <ColumnDefinition Width="5*"/>
+                <ColumnDefinition Width="20*"/>
+            </Grid.ColumnDefinitions>
+
+            <Label x:Name="LabelPresetIndex" Content="Index" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Label x:Name="LabelPresetName" Content="Friendly Name" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+            <Label x:Name="LabelPresetSelect" Content="Select" Grid.Column="4" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+
+        </Grid>
+
+        <ListBox x:Name="CameraPresetList" ItemsSource="{Binding VidyoCameraPresets}" ScrollViewer.HorizontalScrollBarVisibility="Disabled" Grid.Row="3" Grid.Column="1"  HorizontalContentAlignment="Stretch" VerticalContentAlignment="Stretch">
+            <ListBox.ItemTemplate>
+                <DataTemplate>
+                    <Grid x:Name="CameraPresetGrid" Width="Auto">
+                        <Grid.ColumnDefinitions>
+                            <ColumnDefinition Width="20*"/>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="70*"/>
+                            <ColumnDefinition Width="5*"/>
+                            <ColumnDefinition Width="10*"/>
+                        </Grid.ColumnDefinitions>
+
+                        <Label x:Name="CameraPresetIndex" Content="{Binding PresetIndex}" Grid.Column="0" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <Label x:Name="CameraPresetName" Content="{Binding PresetName}" Grid.Column="2" HorizontalAlignment="Left" VerticalAlignment="Center"/>
+                        <RadioButton x:Name="RadioButtonSelectPreset" GroupName="GroupPreset" Grid.Column="6" IsChecked="{Binding PresetStatus, Mode=TwoWay}" Foreground="#FF666666" HorizontalAlignment="Left" />
+                    </Grid>
+                </DataTemplate>
+            </ListBox.ItemTemplate>
+        </ListBox>
+
+        <Button x:Name="ButtonActivatePreset" Content="Activate Preset" FontSize="10" Grid.Row="5" Grid.Column="1"  Margin="0,1" Background="#FF666666" Foreground="White" Click="VidyoCameraActivatePresetClick"/>
+    </Grid>
+</Window>
